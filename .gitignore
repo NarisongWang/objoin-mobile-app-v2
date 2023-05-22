@@ -18,5 +18,7 @@ web-build/
 
 #
 .vscode/
+%ProgramData%/
 eas.json
 package-lock.json
+yarn.lock
