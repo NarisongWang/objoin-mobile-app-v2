@@ -1,38 +1,184 @@
-import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItem,
+} from '@react-navigation/drawer';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebaseConfig';
+import SignIn from './src/screens/SignIn';
+import Home from './src/screens/Home';
+import EditProfile from './src/screens/EditProfile';
+import Spinner from './src/components/Spinner';
+import { Text, Pressable, Image, View } from 'react-native';
+
+const AuthStack = createNativeStackNavigator();
+const MainStack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+// Authentication stack
+const AppAuthStack = () => {
+  return (
+    <AuthStack.Navigator>
+      <AuthStack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{
+          headerTitle: () => {
+            return (
+              <Text className="md:text-lg font-bold">OBJOIN - Sign In</Text>
+            );
+          },
+        }}
+      />
+    </AuthStack.Navigator>
+  );
+};
+
+// Main application stack
+const AppMainStack = () => {
+  const user = auth.currentUser;
+  const navigation = useNavigation();
+  return (
+    <MainStack.Navigator>
+      <MainStack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          headerTitle: () => {
+            return (
+              <Text className="md:text-lg font-bold">OBJOIN - Home Screen</Text>
+            );
+          },
+          headerRight: () => {
+            return (
+              <Pressable
+                className="h-10 w-10 md:h-16 md:w-16 md:my-2"
+                onPress={() => {
+                  navigation.toggleDrawer();
+                }}
+              >
+                <Image
+                  className="w-10 h-10 md:h-16 md:w-16 rounded-full"
+                  source={
+                    user.photoURL
+                      ? { uri: user.photoURL }
+                      : require('./assets/default-profile.jpg')
+                  }
+                ></Image>
+              </Pressable>
+            );
+          },
+        }}
+      />
+      <MainStack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{
+          headerTitle: () => {
+            return (
+              <Text className="md:text-lg font-bold">
+                OBJOIN - Edit Profile
+              </Text>
+            );
+          },
+          headerRight: () => {
+            return (
+              <Pressable
+                className="h-10 w-10 md:h-16 md:w-16 md:my-2"
+                onPress={() => {
+                  navigation.toggleDrawer();
+                }}
+              >
+                <Image
+                  className="w-10 h-10 md:h-16 md:w-16 rounded-full"
+                  source={
+                    user.photoURL
+                      ? { uri: user.photoURL }
+                      : require('./assets/default-profile.jpg')
+                  }
+                ></Image>
+              </Pressable>
+            );
+          },
+        }}
+      />
+    </MainStack.Navigator>
+  );
+};
+
+// Drawer menu part
+const CustomDrawerContent = ({ navigation }) => {
+  const user = auth.currentUser;
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {})
+      .catch((error) => {});
+  };
+  return (
+    <DrawerContentScrollView>
+      <View className="flex flex-col items-center justify-center mt-3 pb-3 border-gray-200 border-b">
+        <Image
+          className="h-16 w-16 md:h-20 md:w-20 rounded-full"
+          source={
+            user.photoURL
+              ? { uri: user.photoURL }
+              : require('./assets/default-profile.jpg')
+          }
+        />
+        <Text className="mt-5 mb-2 md:text-lg">Hi {user.displayName},</Text>
+        <Text className="text-xs md:text-sm">{user.email}</Text>
+      </View>
+      <DrawerItem
+        className="bg-slate-400"
+        label="Edit Profile"
+        onPress={() => navigation.navigate('EditProfile')}
+      />
+      <DrawerItem label="Signout" onPress={handleSignOut} />
+    </DrawerContentScrollView>
+  );
+};
+
+const AppDrawer = () => {
+  return (
+    <Drawer.Navigator
+      screenOptions={{ drawerPosition: 'right', headerShown: false }}
+      drawerContent={CustomDrawerContent}
+    >
+      <Drawer.Screen name="Installation Orders" component={AppMainStack} />
+    </Drawer.Navigator>
+  );
+};
+
+// App routes
+const AppRoutes = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+      }
+      setChecking(false);
+    });
+  }, []);
+
+  if (checking) {
+    return <Spinner />;
+  }
+
+  return (
+    <NavigationContainer>
+      {loggedIn ? <AppDrawer /> : <AppAuthStack />}
+    </NavigationContainer>
+  );
+};
 
 export default function App() {
-  const [text, setText] = useState('Useless Text');
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>
-        Open up App.js to start working on your app!
-      </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setText}
-        value={text}
-      ></TextInput>
-      <StatusBar style="auto" />
-    </View>
-  );
+  return <AppRoutes />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    height: 300,
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
