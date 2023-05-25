@@ -60,6 +60,19 @@ export const installationOrderSlice = createSlice({
       .addCase(getInstallationOrders.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      //reducers for updateInstallationOrder
+      .addCase(updateInstallationOrder.pending, (state) => {
+        state.isLoading = true;
+        state.error = '';
+      })
+      .addCase(updateInstallationOrder.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.installationOrder = action.payload;
+      })
+      .addCase(updateInstallationOrder.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
