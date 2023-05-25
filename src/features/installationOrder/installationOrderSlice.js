@@ -26,6 +26,22 @@ export const getInstallationOrders = createAsyncThunk(
   }
 );
 
+export const updateInstallationOrder = createAsyncThunk(
+  'installationOrder/updateInstallationOrder',
+  async (update, thunkAPI) => {
+    try {
+      const token = await getAuth().currentUser.getIdToken();
+      return await installationOrderAPI.updateInstallationOrder(update, token);
+    } catch (err) {
+      const message =
+        (err.response && err.response.data && err.response.data.message) ||
+        err.message ||
+        err.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const installationOrderSlice = createSlice({
   name: 'installationOrder',
   initialState,
