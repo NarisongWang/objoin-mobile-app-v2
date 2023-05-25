@@ -9,10 +9,12 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 import SignIn from './src/screens/SignIn';
-import Home from './src/screens/Home';
+import OrderList from './src/screens/InstallationOrderList';
 import EditProfile from './src/screens/EditProfile';
 import Spinner from './src/components/Spinner';
 import { Text, Pressable, Image, View } from 'react-native';
+import { Provider } from 'react-redux';
+import { store } from './src/app/store';
 
 const AuthStack = createNativeStackNavigator();
 const MainStack = createNativeStackNavigator();
@@ -44,24 +46,24 @@ const AppMainStack = () => {
   return (
     <MainStack.Navigator>
       <MainStack.Screen
-        name="Home"
-        component={Home}
+        name="OrderList"
+        component={OrderList}
         options={{
           headerTitle: () => {
             return (
-              <Text className="md:text-lg font-bold">OBJOIN - Home Screen</Text>
+              <Text className="md:text-lg font-bold">OBJOIN - Order List</Text>
             );
           },
           headerRight: () => {
             return (
               <Pressable
-                className="h-10 w-10 md:h-16 md:w-16 md:my-2"
+                className="h-10 w-10 md:h-14 md:w-14 md:my-2"
                 onPress={() => {
                   navigation.toggleDrawer();
                 }}
               >
                 <Image
-                  className="w-10 h-10 md:h-16 md:w-16 rounded-full"
+                  className="w-10 h-10 md:h-14 md:w-14 rounded-full"
                   source={
                     user.photoURL
                       ? { uri: user.photoURL }
@@ -87,13 +89,13 @@ const AppMainStack = () => {
           headerRight: () => {
             return (
               <Pressable
-                className="h-10 w-10 md:h-16 md:w-16 md:my-2"
+                className="h-10 w-10 md:h-14 md:w-14 md:my-2"
                 onPress={() => {
                   navigation.toggleDrawer();
                 }}
               >
                 <Image
-                  className="w-10 h-10 md:h-16 md:w-16 rounded-full"
+                  className="w-10 h-10 md:h-14 md:w-14 rounded-full"
                   source={
                     user.photoURL
                       ? { uri: user.photoURL }
@@ -119,7 +121,7 @@ const CustomDrawerContent = ({ navigation }) => {
   };
   return (
     <DrawerContentScrollView>
-      <View className="flex flex-col items-center justify-center mt-3 pb-3 border-gray-200 border-b">
+      <View className="flex flex-col items-center justify-center my-3 pb-3 border-gray-200 border-b">
         <Image
           className="h-16 w-16 md:h-20 md:w-20 rounded-full"
           source={
@@ -180,5 +182,9 @@ const AppRoutes = () => {
 };
 
 export default function App() {
-  return <AppRoutes />;
+  return (
+    <Provider store={store}>
+      <AppRoutes />
+    </Provider>
+  );
 }
