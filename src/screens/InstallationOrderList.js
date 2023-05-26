@@ -19,6 +19,7 @@ import InstallationOrderItem from '../components/InstallationOrderItem';
 import { auth } from '../../firebaseConfig';
 import { MaterialIcons } from '@expo/vector-icons';
 import InstallationOrderTableHead from '../components/InstallationOrderTableHead';
+import Button from '../components/Button';
 
 const OrderList = ({ navigation }) => {
   const windowWidth = Dimensions.get('window').width;
@@ -29,7 +30,7 @@ const OrderList = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
-  // initial order list request
+  // initial order list screen
   useEffect(() => {
     dispatch(getInstallationOrders())
       .unwrap()
@@ -82,7 +83,10 @@ const OrderList = ({ navigation }) => {
       return;
     }
     if (role === deliverer) {
-      navigation.navigate('Detail1', { installationOrderId: select._id });
+      navigation.navigate('Detail1', {
+        installationOrderId: select._id,
+        installationOrderNumber: select.installationOrderNumber,
+      });
     } else if (role === installer) {
       if (select.workStatus === 2) {
         const update = {
@@ -98,11 +102,17 @@ const OrderList = ({ navigation }) => {
         dispatch(updateInstallationOrder(update))
           .unwrap()
           .then(() => {
-            navigation.navigate('Detail2', { installationOrderId: select._id });
+            navigation.navigate('Detail2', {
+              installationOrderId: select._id,
+              installationOrderNumber: select.installationOrderNumber,
+            });
           })
           .catch();
       } else {
-        navigation.navigate('Detail2', { installationOrderId: select._id });
+        navigation.navigate('Detail2', {
+          installationOrderId: select._id,
+          installationOrderNumber: select.installationOrderNumber,
+        });
       }
     }
     setSelect(null);
@@ -154,31 +164,23 @@ const OrderList = ({ navigation }) => {
           </View>
           {/* Buttons */}
           <View className="flex flex-row items-center justify-between h-[70] md:h-[100] w-4/5">
-            <Pressable
-              className="w-[120] md:w-[200] flex justify-center items-center p-2 rounded-lg md:rounded-xl bg-blue-500"
-              onPress={() => {
+            <Button
+              title="REFRESH"
+              pressEvent={() => {
                 refresh();
               }}
-            >
-              <Text className="text-white font-bold text-md md:text-xl">
-                Refresh
-              </Text>
-            </Pressable>
-            <Pressable
-              className={`w-[120] md:w-[200] flex justify-center items-center p-2 rounded-lg md:rounded-xl ${
-                select ? 'bg-blue-500' : 'bg-gray-300'
-              }`}
-              onPress={() => {
+            />
+
+            <Button
+              title="START"
+              disabled={select ? false : true}
+              pressEvent={() => {
                 if (select) {
                   startInstallationOrder();
                 } else {
                 }
               }}
-            >
-              <Text className="text-white font-bold text-md md:text-xl">
-                Start
-              </Text>
-            </Pressable>
+            />
           </View>
         </View>
       )}

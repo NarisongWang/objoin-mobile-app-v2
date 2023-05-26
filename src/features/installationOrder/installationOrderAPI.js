@@ -28,6 +28,19 @@ const getInstallationOrders = async (token, thunkAPI) => {
   }
 };
 
+const getInstallationOrder = async (installationOrderId, token) => {
+  try {
+    const config = getConfig(token);
+    const response = await axios.get(
+      API_URL_LIST + installationOrderId,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
 const updateInstallationOrder = async (update, token) => {
   try {
     const config = getConfig(token);
@@ -54,6 +67,7 @@ const isCurrentFolderInOrderList = (order, installationOrders) => {
 
 const installationOrderAPI = {
   getInstallationOrders,
+  getInstallationOrder,
   updateInstallationOrder,
 };
 
