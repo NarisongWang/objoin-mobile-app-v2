@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
-import { SafeAreaView, ScrollView, View, Text, TextInput } from 'react-native';
-import { getInstallationOrder1 } from '../features/installationOrder/installationOrderSlice';
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  Alert,
+} from 'react-native';
+import {
+  getInstallationOrder1,
+  submitOrder,
+} from '../features/installationOrder/installationOrderSlice';
 import Spinner from '../components/Spinner';
 import FoldBar from '../components/FoldBar';
 import OrderInfo from '../components/OrderInfo';
@@ -34,7 +44,7 @@ const OrderDetail1 = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
-  // initial order detail screen
+  // initialize order detail screen
   useEffect(() => {
     dispatch(getInstallationOrder1(installationOrderId));
     loadPhotos();
@@ -74,6 +84,52 @@ const OrderDetail1 = ({ navigation, route }) => {
         });
       }
     });
+  };
+
+  // submit delivery work
+  const onSubmit = () => {
+    if (photos.length === 0) {
+      alert('Please take at least 1 photo for your installation.');
+      return;
+    }
+    Alert.alert('', 'Are you sure you want to submit this work?', [
+      {
+        text: 'Cancel',
+        onPress: () => null,
+        style: 'cancel',
+      },
+      {
+        text: 'YES',
+        onPress: () => {
+          const newTimeFrame = {
+            workStatus: installationOrder.workStatus + 1,
+            time: new Date(),
+          };
+          const timeFrames = [...installationOrder.timeFrames, newTimeFrame];
+          const update = {
+            workStatus: installationOrder.workStatus + 1,
+            timeFrames: timeFrames,
+            photos0: photos,
+            deliveryComment: noteInput,
+          };
+          const orderInfo = {
+            installationOrderId: installationOrder._id,
+            installationOrderNumber: installationOrder.installationOrderNumber,
+            userType: 0,
+            update: update,
+          };
+          dispatch(submitOrder(orderInfo))
+            .unwrap()
+            .then(() => {
+              alert(
+                `You have successfully submitted the delivery task! Thank you!`
+              );
+              navigation.goBack();
+            })
+            .catch();
+        },
+      },
+    ]);
   };
 
   if (isLoading) {
@@ -154,7 +210,9 @@ const OrderDetail1 = ({ navigation, route }) => {
         />
         <Button
           title="COMPLETE"
-          pressEvent={() => {}}
+          pressEvent={() => {
+            onSubmit();
+          }}
           disabled={attachementsFullfilled ? false : true}
         />
       </View>

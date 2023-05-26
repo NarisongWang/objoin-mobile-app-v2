@@ -100,7 +100,7 @@ const CameraScreen = ({ navigation, route }) => {
             <Input
               label="Photo name"
               value={photoName}
-              onChangeText={(newValue) => setPhotoName(newValue)}
+              onChangeText={(newValue) => setPhotoName(newValue.trim())}
               autoCapitalize="none"
               autoCorrect={false}
             />

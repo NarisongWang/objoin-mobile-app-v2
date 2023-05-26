@@ -124,7 +124,7 @@ const OrderList = ({ navigation }) => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {installationOrders.length === 0 ? (
+      {installationOrders && installationOrders.length === 0 ? (
         <Text className="text-blue-600 italic text-xl text-center m-10">
           *No available installation orders found.
         </Text>
@@ -137,17 +137,21 @@ const OrderList = ({ navigation }) => {
                 {/* Table Header */}
                 <InstallationOrderTableHead />
                 {/* Table Body */}
-                {installationOrders.map((installationOrder, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => selectInstallationOrder(installationOrder)}
-                  >
-                    <InstallationOrderItem
-                      installationOrder={installationOrder}
-                      select={select}
-                    />
-                  </TouchableOpacity>
-                ))}
+                {installationOrders && installationOrders.length > 0
+                  ? installationOrders.map((installationOrder, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() =>
+                          selectInstallationOrder(installationOrder)
+                        }
+                      >
+                        <InstallationOrderItem
+                          installationOrder={installationOrder}
+                          select={select}
+                        />
+                      </TouchableOpacity>
+                    ))
+                  : null}
               </View>
             </ScrollView>
           </ScrollView>

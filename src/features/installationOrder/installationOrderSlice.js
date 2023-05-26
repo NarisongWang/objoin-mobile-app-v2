@@ -29,7 +29,7 @@ export const getInstallationOrders = createAsyncThunk(
 
 //get installation order and only update installationOrder state
 export const getInstallationOrder1 = createAsyncThunk(
-  'installationOrder/getInstallationOrder',
+  'installationOrder/getInstallationOrder1',
   async (installationOrderId, thunkAPI) => {
     try {
       const token = await getAuth().currentUser.getIdToken();
@@ -49,7 +49,7 @@ export const getInstallationOrder1 = createAsyncThunk(
 
 //get installation order, then update installationOrder and files state
 export const getInstallationOrder2 = createAsyncThunk(
-  'installationOrder/getInstallationOrder',
+  'installationOrder/getInstallationOrder2',
   async (installationOrderId, thunkAPI) => {
     try {
       const token = await getAuth().currentUser.getIdToken();
@@ -73,6 +73,22 @@ export const updateInstallationOrder = createAsyncThunk(
     try {
       const token = await getAuth().currentUser.getIdToken();
       return await installationOrderAPI.updateInstallationOrder(update, token);
+    } catch (err) {
+      const message =
+        (err.response && err.response.data && err.response.data.message) ||
+        err.message ||
+        err.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const submitOrder = createAsyncThunk(
+  'installationOrder/submitOrder',
+  async (orderInfo, thunkAPI) => {
+    try {
+      const token = await getAuth().currentUser.getIdToken();
+      return await installationOrderAPI.submitOrder(orderInfo, token);
     } catch (err) {
       const message =
         (err.response && err.response.data && err.response.data.message) ||
@@ -125,6 +141,19 @@ export const installationOrderSlice = createSlice({
         state.installationOrder = action.payload;
       })
       .addCase(updateInstallationOrder.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      //reducers for submitOrder
+      .addCase(submitOrder.pending, (state) => {
+        state.isLoading = true;
+        state.error = '';
+      })
+      .addCase(submitOrder.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.installationOrders = action.payload;
+      })
+      .addCase(submitOrder.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });
