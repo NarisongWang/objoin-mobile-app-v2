@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import installationOrderAPI from './installationOrderAPI';
+import { initFiles } from '../../utils/utils';
 import { getAuth } from 'firebase/auth';
 
 const initialState = {
@@ -128,6 +129,20 @@ export const installationOrderSlice = createSlice({
         state.installationOrder = action.payload;
       })
       .addCase(getInstallationOrder1.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      //reducers for getInstallationOrder2
+      .addCase(getInstallationOrder2.pending, (state) => {
+        state.isLoading = true;
+        state.error = '';
+      })
+      .addCase(getInstallationOrder2.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.installationOrder = action.payload;
+        state.files = initFiles(action.payload.files);
+      })
+      .addCase(getInstallationOrder2.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       })

@@ -39,3 +39,26 @@ export const parseTime = (strDate) => {
   time = `${hh}:${mm > 9 ? mm : '0' + mm}`;
   return time.toString();
 };
+
+export const initFiles = (files) => {
+  const result = files.reduce((accumulator, file, index) => {
+    const lastIndex = file.lastIndexOf('/') + 1;
+    const file_dir = file.substring(0, lastIndex);
+    const file_name = file.substring(lastIndex, file.length);
+
+    const dirIndex = accumulator.findIndex(
+      (item) => item.file_dir === file_dir
+    );
+    if (dirIndex === -1) {
+      let dirObject = {
+        file_dir: file_dir,
+        files: [{ id: index, file_name: file_name }],
+      };
+      accumulator.push(dirObject);
+    } else {
+      accumulator[dirIndex].files.push({ id: index, file_name: file_name });
+    }
+    return accumulator;
+  }, []);
+  return result;
+};

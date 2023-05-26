@@ -60,12 +60,13 @@ const OrderDetail1 = ({ navigation, route }) => {
     }
   }, [error]);
 
-  // refresh photos when user turn back from Camera screen
+  // refresh photos when user turn back from Camera or EditPhoto screen
   useEffect(() => {
     loadPhotos();
   }, [isFocused]);
 
   const loadPhotos = () => {
+    //photos0 for delivery user
     const dirUri = `${FileSystem.documentDirectory}${installationOrderNumber}/photos0`;
     FileSystem.getInfoAsync(dirUri).then((fileInfo) => {
       if (fileInfo.isDirectory) {

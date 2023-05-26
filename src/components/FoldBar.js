@@ -28,16 +28,18 @@ const FoldBar = ({
           {title}
         </Text>
         {required && (
-          <Text className="text-base md:text-2xl font-bold text-red-600 mx-2 mt-1">
+          <Text className="text-base md:text-2xl font-bold text-red-600 ml-2 mt-1">
             *
           </Text>
         )}
         {slideable && (
-          <MaterialIcons
-            name="swipe"
-            size={windowWidth > 599 ? 24 : 18}
-            color="#68adde"
-          />
+          <View className="ml-2">
+            <MaterialIcons
+              name="swipe"
+              size={windowWidth > 599 ? 24 : 18}
+              color="#68adde"
+            />
+          </View>
         )}
       </View>
       <View className="flex flex-row mr-3 items-center justify-center">
