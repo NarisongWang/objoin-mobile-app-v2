@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { parseDate } from '../utils/utils';
 
-const InstallationOrderItem = ({ installationOrder, select }) => {
+const OrderItem = ({ installationOrder, select }) => {
   return (
     <View
       className={`flex flex-row items-center justify-start border-gray-100 border-b-2 ${
@@ -84,4 +84,4 @@ const InstallationOrderItem = ({ installationOrder, select }) => {
   );
 };
 
-export default InstallationOrderItem;
+export default OrderItem;

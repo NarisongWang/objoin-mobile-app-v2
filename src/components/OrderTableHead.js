@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-const InstallationOrderTableHead = () => {
+const OrderTableHead = () => {
   return (
     <View className="flex flex-row items-center justify-start bg-blue-50">
       <Text className="w-10">{` `}</Text>
@@ -33,4 +33,4 @@ const InstallationOrderTableHead = () => {
   );
 };
 
-export default InstallationOrderTableHead;
+export default OrderTableHead;

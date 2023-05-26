@@ -15,10 +15,10 @@ import {
   updateInstallationOrder,
 } from '../features/installationOrder/installationOrderSlice';
 import Spinner from '../components/Spinner';
-import InstallationOrderItem from '../components/InstallationOrderItem';
+import OrderItem from '../components/OrderItem';
 import { auth } from '../../firebaseConfig';
 import { MaterialIcons } from '@expo/vector-icons';
-import InstallationOrderTableHead from '../components/InstallationOrderTableHead';
+import OrderTableHead from '../components/OrderTableHead';
 import Button from '../components/Button';
 
 const OrderList = ({ navigation }) => {
@@ -135,7 +135,7 @@ const OrderList = ({ navigation }) => {
               {/* Installation Order List Table */}
               <View>
                 {/* Table Header */}
-                <InstallationOrderTableHead />
+                <OrderTableHead />
                 {/* Table Body */}
                 {installationOrders && installationOrders.length > 0
                   ? installationOrders.map((installationOrder, index) => (
@@ -145,7 +145,7 @@ const OrderList = ({ navigation }) => {
                           selectInstallationOrder(installationOrder)
                         }
                       >
-                        <InstallationOrderItem
+                        <OrderItem
                           installationOrder={installationOrder}
                           select={select}
                         />

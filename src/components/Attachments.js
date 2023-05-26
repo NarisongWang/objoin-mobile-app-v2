@@ -39,6 +39,7 @@ const Attachments = ({
           ))}
         </ScrollView>
       </View>
+      {/* Notice message */}
       {photos.length > 0 ? (
         <Text className="text-red-600 italic text-xs mb-2 md:text-lg">
           * Click on photo to rename or delete.
