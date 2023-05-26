@@ -61,13 +61,15 @@ const OrderDetail1 = ({ navigation, route }) => {
       if (fileInfo.isDirectory) {
         FileSystem.readDirectoryAsync(dirUri).then((localPhotos) => {
           localPhotos.sort();
-          let photos = [];
+          let newPhotos = [];
           localPhotos.forEach((localPhoto) => {
-            photos.push(`${installationOrderNumber}/photos0/${localPhoto}`);
+            newPhotos.push(`${installationOrderNumber}/photos0/${localPhoto}`);
           });
-          setPhotos(photos);
-          if (photos.length > 0) {
+          setPhotos(newPhotos);
+          if (newPhotos.length > 0) {
             setAttachmentsFullfilled(true);
+          } else {
+            setAttachmentsFullfilled(false);
           }
         });
       }

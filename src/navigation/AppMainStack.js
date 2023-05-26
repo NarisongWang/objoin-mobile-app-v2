@@ -7,6 +7,7 @@ import OrderList from '../screens/InstallationOrderList';
 import OrderDetail1 from '../screens/InstallationOrderDetail1';
 import OrderDetail2 from '../screens/InstallationOrderDetail2';
 import CameraScreen from '../screens/Camera';
+import EditPhoto from '../screens/EditPhoto';
 import EditProfile from '../screens/EditProfile';
 
 const AppMainStack = () => {
@@ -56,6 +57,15 @@ const AppMainStack = () => {
         options={{
           headerTitle: () => {
             return <HeaderTitle title="OBJOIN - Camera" />;
+          },
+        }}
+      />
+      <MainStack.Screen
+        name="EditPhoto"
+        component={EditPhoto}
+        options={{
+          headerTitle: () => {
+            return <HeaderTitle title="OBJOIN - Edit Photo" />;
           },
         }}
       />

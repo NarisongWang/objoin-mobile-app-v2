@@ -30,7 +30,11 @@ const Attachments = ({
       </Pressable>
       <ScrollView className="m-2 h-[250] w-full" horizontal={true}>
         {photos.map((photo, index) => (
-          <Photo key={index} uri={FileSystem.documentDirectory + photo}></Photo>
+          <Photo
+            key={index}
+            uri={FileSystem.documentDirectory + photo}
+            navigation={navigation}
+          ></Photo>
         ))}
       </ScrollView>
     </View>
