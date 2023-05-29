@@ -100,6 +100,22 @@ export const submitOrder = createAsyncThunk(
   }
 );
 
+export const openPDF = createAsyncThunk(
+  'installationOrder/openPDF',
+  async (fileInfo, thunkAPI) => {
+    try {
+      const token = await getAuth().currentUser.getIdToken();
+      return await installationOrderAPI.openPDF(fileInfo, token);
+    } catch (err) {
+      const message =
+        (err.response && err.response.data && err.response.data.message) ||
+        err.message ||
+        err.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const installationOrderSlice = createSlice({
   name: 'installationOrder',
   initialState,
@@ -169,6 +185,18 @@ export const installationOrderSlice = createSlice({
         state.installationOrders = action.payload;
       })
       .addCase(submitOrder.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      //reducers for openPDF
+      .addCase(openPDF.pending, (state) => {
+        state.isLoading = true;
+        state.error = '';
+      })
+      .addCase(openPDF.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(openPDF.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

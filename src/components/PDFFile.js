@@ -1,12 +1,17 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 
-const PDFFile = ({ filePath, fileName }) => {
+const PDFFile = ({ filePath, fileName, navigation }) => {
   return (
     <View className="mt-2 md:mt-5">
       <TouchableOpacity
         className="flex flex-col w-30 h-auto items-center md:w-40 md:h-40"
-        onPress={() => {}}
+        onPress={() => {
+          navigation.navigate('PDF', {
+            filePath,
+            fileName,
+          });
+        }}
       >
         <Image
           className="h-10 w-10 md:h-16 md:w-16"

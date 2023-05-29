@@ -121,6 +121,41 @@ const submitOrder = async (orderInfo, token) => {
   }
 };
 
+const openPDF = async (fileInfo, token) => {
+  try {
+    const config = getConfig(token);
+    const { filePath, fileName } = fileInfo;
+    //find document from local storage
+    const fileUri = FileSystem.documentDirectory + filePath + fileName;
+    const fileExists = (await FileSystem.getInfoAsync(fileUri)).exists;
+    //if document exists then return fileUri
+    if (fileExists) {
+      return fileUri;
+    }
+    //if document doesn't exist, download file from the backend
+    else {
+      //check directory
+      const dirUri = FileSystem.documentDirectory + filePath;
+      const dirExists = (await FileSystem.getInfoAsync(dirUri)).isDirectory;
+      if (!dirExists) {
+        await FileSystem.makeDirectoryAsync(dirUri, { intermediates: true });
+      }
+      // download pdf file
+      const response = await axios.post(
+        API_URL_DOWNLOAD,
+        { path: filePath + fileName },
+        config
+      );
+      await FileSystem.writeAsStringAsync(fileUri, response.data, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      return fileUri;
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
 const isCurrentFolderInOrderList = (order, installationOrders) => {
   for (let i = 0; i < installationOrders.length; i++) {
     const installationOrder = installationOrders[i];
@@ -136,6 +171,7 @@ const installationOrderAPI = {
   getInstallationOrder,
   updateInstallationOrder,
   submitOrder,
+  openPDF,
 };
 
 export default installationOrderAPI;

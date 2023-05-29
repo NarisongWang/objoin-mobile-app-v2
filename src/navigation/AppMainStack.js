@@ -8,6 +8,7 @@ import OrderDetail1 from '../screens/OrderDetail1';
 import OrderDetail2 from '../screens/OrderDetail2';
 import CameraScreen from '../screens/Camera';
 import EditPhoto from '../screens/EditPhoto';
+import PDFScreen from '../screens/PDFScreen';
 import EditProfile from '../screens/EditProfile';
 
 const AppMainStack = () => {
@@ -66,6 +67,15 @@ const AppMainStack = () => {
         options={{
           headerTitle: () => {
             return <HeaderTitle title="OBJOIN - Edit Photo" />;
+          },
+        }}
+      />
+      <MainStack.Screen
+        name="PDF"
+        component={PDFScreen}
+        options={{
+          headerTitle: () => {
+            return <HeaderTitle title="PDF file - " />;
           },
         }}
       />

@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-  TextInput,
-  Alert,
-} from 'react-native';
+import { SafeAreaView, ScrollView, View, Text } from 'react-native';
 import {
   getInstallationOrder2,
   submitOrder,
@@ -20,6 +13,7 @@ import Button from '../components/Button';
 import Attachments from '../components/Attachments';
 import * as FileSystem from 'expo-file-system';
 import PDFList from '../components/PDFList';
+import InstallCheckList from '../components/InstallCheckList';
 
 const OrderDetail2 = ({ navigation, route }) => {
   const installationOrderId = route.params.installationOrderId;
@@ -126,7 +120,7 @@ const OrderDetail2 = ({ navigation, route }) => {
             setState={setShowPdfFiles}
             slideable={true}
           />
-          {showPdfFiles && <PDFList dirs={files} />}
+          {showPdfFiles && <PDFList dirs={files} navigation={navigation} />}
         </View>
         {/* Install check list */}
         <View className="border border-blue-100 rounded-lg mx-3 mt-3 md:border-2 md:mx-5 md:mt-5">
@@ -137,6 +131,7 @@ const OrderDetail2 = ({ navigation, route }) => {
             required={true}
             fullfilled={checkListFullfilled}
           />
+          {showCheckList && <InstallCheckList />}
         </View>
         {/* Installation Items */}
         <View className="border border-blue-100 rounded-lg mx-3 mt-3 md:border-2 md:mx-5 md:mt-5">

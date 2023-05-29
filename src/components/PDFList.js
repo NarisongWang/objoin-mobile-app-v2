@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import PDFFile from './PDFFile';
 
-const PDFList = ({ dirs }) => {
+const PDFList = ({ dirs, navigation }) => {
   return (
     <View className="flex flex-col items-start justify-between m-5 my-2 rounded-lg md:rounded-3xl">
       {dirs.map((dir, index) => (
@@ -14,7 +14,12 @@ const PDFList = ({ dirs }) => {
           </View>
           <ScrollView horizontal>
             {dir.files.map((file, index2) => (
-              <PDFFile key={index2} filePath={dir} fileName={file.file_name} />
+              <PDFFile
+                key={index2}
+                filePath={dir.file_dir}
+                fileName={file.file_name}
+                navigation={navigation}
+              />
             ))}
           </ScrollView>
         </View>

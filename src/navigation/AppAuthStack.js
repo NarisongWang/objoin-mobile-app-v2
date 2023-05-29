@@ -12,7 +12,7 @@ const AppAuthStack = () => {
         component={SignIn}
         options={{
           headerTitle: () => {
-            return <HeaderTitle title="OBJOIN - Singn In" />;
+            return <HeaderTitle title="OBJOIN - Sign In" />;
           },
         }}
       />
