@@ -9,6 +9,7 @@ import OrderDetail2 from '../screens/OrderDetail2';
 import CameraScreen from '../screens/Camera';
 import EditPhoto from '../screens/EditPhoto';
 import PDFScreen from '../screens/PDFScreen';
+import CheckList from '../screens/CheckList';
 import EditProfile from '../screens/EditProfile';
 
 const AppMainStack = () => {
@@ -76,6 +77,15 @@ const AppMainStack = () => {
         options={{
           headerTitle: () => {
             return <HeaderTitle title="PDF file - " />;
+          },
+        }}
+      />
+      <MainStack.Screen
+        name="CheckList"
+        component={CheckList}
+        options={{
+          headerTitle: () => {
+            return <HeaderTitle title="Install Check List - " />;
           },
         }}
       />

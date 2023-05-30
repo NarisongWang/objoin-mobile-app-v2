@@ -4,7 +4,7 @@ import { openPDF } from '../features/installationOrder/installationOrderSlice';
 import { Text, SafeAreaView, useWindowDimensions } from 'react-native';
 import Spinner from '../components/Spinner';
 import HeaderTitle from '../components/HeaderTitle';
-import Pdf from 'react-native-pdf';
+//import Pdf from 'react-native-pdf';
 import * as FileSystem from 'expo-file-system';
 
 const PDFScreen = ({ navigation, route }) => {
@@ -24,9 +24,7 @@ const PDFScreen = ({ navigation, route }) => {
   //initialize
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: () => {
-        <HeaderTitle title={`OBJOIN - PDF - ${fileName}`} />;
-      },
+      headerTitle: () => <HeaderTitle title={`OBJOIN - PDF - ${fileName}`} />,
     });
 
     dispatch(openPDF({ fileName, filePath }));

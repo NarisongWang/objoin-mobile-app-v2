@@ -30,7 +30,6 @@ const OrderDetail2 = ({ navigation, route }) => {
   const [showAttachments, setShowAttachments] = useState(true);
 
   // required submission conditions
-  const [checkListFullfilled, setCheckListFullfilled] = useState(false);
   const [checkItemsFullfilled, setCheckItemsFullfilled] = useState(false);
   const [attachementsFullfilled, setAttachmentsFullfilled] = useState(false);
 
@@ -129,9 +128,19 @@ const OrderDetail2 = ({ navigation, route }) => {
             state={showCheckList}
             setState={setShowCheckList}
             required={true}
-            fullfilled={checkListFullfilled}
+            fullfilled={
+              installationOrder.checkListSignature &&
+              installationOrder.checkListSignature.signed
+                ? true
+                : false
+            }
           />
-          {showCheckList && <InstallCheckList />}
+          {showCheckList && (
+            <InstallCheckList
+              installationOrder={installationOrder}
+              navigation={navigation}
+            />
+          )}
         </View>
         {/* Installation Items */}
         <View className="border border-blue-100 rounded-lg mx-3 mt-3 md:border-2 md:mx-5 md:mt-5">
@@ -178,7 +187,7 @@ const OrderDetail2 = ({ navigation, route }) => {
           }}
           disabled={
             attachementsFullfilled &&
-            checkListFullfilled &&
+            installationOrder.checkListSignature.signed &&
             checkItemsFullfilled
               ? false
               : true

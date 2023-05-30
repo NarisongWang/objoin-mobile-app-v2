@@ -1,11 +1,19 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 
-const InstallCheckList = () => {
+const InstallCheckList = ({ navigation, installationOrder }) => {
   return (
-    <View>
-      <Text>Install Check List</Text>
-    </View>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('CheckList', {
+          installationOrder: installationOrder,
+        })
+      }
+    >
+      <Text className="font-bold italic text-sm md:text-lg m-3 text-blue-600">
+        KITCHEN INSTALL CHECKLIST
+      </Text>
+    </TouchableOpacity>
   );
 };
 
