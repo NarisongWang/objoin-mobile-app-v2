@@ -1,96 +1,74 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import CheckBox from './CheckBox';
 
-const CheckListItem = ({ checkItem, handleChange, disabled }) => {
-  const [check1, setCheck1] = useState(checkItem.status === 1 ? true : false);
-  const [check2, setCheck2] = useState(checkItem.status === 2 ? true : false);
-  const [check3, setCheck3] = useState(checkItem.status === 3 ? true : false);
+const CheckListItem = React.forwardRef(({ checkItem, disabled }, ref) => {
   const [noteInput, setNoteInput] = useState(checkItem.note);
+  const [item, setItem] = useState(checkItem);
+  useImperativeHandle(
+    ref,
+    () => ({
+      getCheckItem: () => {
+        return item;
+      },
+    }),
+    [item]
+  );
 
   useEffect(() => {
-    changeInput();
+    const newItem = {
+      title: item.title,
+      index: item.index,
+      status: item.status,
+      note: noteInput,
+    };
+    setItem(newItem);
   }, [noteInput]);
 
-  const setCheck = (i) => {
-    setCheck1(false);
-    setCheck2(false);
-    setCheck3(false);
-    switch (i) {
-      case 1:
-        setCheck1(true);
-        break;
-      case 2:
-        setCheck2(true);
-        break;
-      case 3:
-        setCheck3(true);
-        break;
-      default:
-        break;
-    }
-    const checkStatus = i;
-    handleChange(
-      {
-        title: checkItem.title,
-        index: checkItem.index,
-        status: checkStatus,
-        note: noteInput,
-      },
-      checkItem.index
-    );
+  const handleChange = (status) => {
+    const newItem = {
+      title: item.title,
+      index: item.index,
+      status: status,
+      note: noteInput,
+    };
+    setItem(newItem);
   };
 
-  const changeInput = () => {
-    let checkStatus = 0;
-    if (check1) checkStatus = 1;
-    if (check2) checkStatus = 2;
-    if (check3) checkStatus = 3;
-    handleChange(
-      {
-        title: checkItem.title,
-        index: checkItem.index,
-        status: checkStatus,
-        note: noteInput,
-      },
-      checkItem.index
-    );
-  };
-
-  return checkItem.title !== 'Other notes' ? (
+  return item.title !== 'Other notes' ? (
     <View className="flex-row border-b border-gray-300 py-1">
       {/* Check Item Title */}
       <View className=" items-start justify-center ml-3 my-1 w-[100] md:w-[200]">
         <Text className="text-xxs md:text-sm">
-          {checkItem.index} - {checkItem.title}
+          {item.index} - {item.title}
         </Text>
       </View>
       {/* Check boxes */}
       <View className="flex-row items-center mx-3">
         <CheckBox
           title="YES"
-          checked={check1}
+          checked={item.status === 1 ? true : false}
           onCheck={() => {
             if (!disabled) {
-              setCheck(1);
+              handleChange(1);
             }
           }}
         ></CheckBox>
         <CheckBox
           title="NO"
-          checked={check2}
+          checked={item.status === 2 ? true : false}
           onCheck={() => {
             if (!disabled) {
-              setCheck(2);
+              handleChange(2);
             }
           }}
         ></CheckBox>
         <CheckBox
           title="N/A"
-          checked={check3}
+          checked={item.status === 3 ? true : false}
           onCheck={() => {
             if (!disabled) {
-              setCheck(3);
+              handleChange(3);
             }
           }}
         ></CheckBox>
@@ -135,6 +113,6 @@ const CheckListItem = ({ checkItem, handleChange, disabled }) => {
       </View>
     </View>
   );
-};
+});
 
 export default CheckListItem;

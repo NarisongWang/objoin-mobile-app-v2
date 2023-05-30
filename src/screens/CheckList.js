@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateInstallationOrder } from '../features/installationOrder/installationOrderSlice';
 import { SafeAreaView, ScrollView, View, Text, Alert } from 'react-native';
@@ -10,7 +10,6 @@ import { parseDateAndTime } from '../utils/utils';
 
 const CheckList = ({ navigation, route }) => {
   const installationOrder = route.params.installationOrder;
-  const [checkList, setCheckList] = useState(installationOrder.checkList);
   const [pageLoading, setPageLoading] = useState(true);
   const { isLoading } = useSelector((state) => state.installationOrder);
 
@@ -28,17 +27,21 @@ const CheckList = ({ navigation, route }) => {
     setTimeout(() => setPageLoading(false), 100);
   }, []);
 
-  const handleChange = (checkItem, index) => {
-    let newCheckList = [...checkList];
-    newCheckList[index] = checkItem;
-    setCheckList(newCheckList);
-  };
+  // Create an array of refs
+  const listItemRefs = installationOrder.checkList.map(() => useRef(null));
 
-  const saveCheckList = () => {
+  const saveCheckList = async () => {
+    setPageLoading(true);
+    const newCheckList = [];
+    await listItemRefs.forEach((itemRef) => {
+      const checkItem = itemRef.current.getCheckItem();
+      newCheckList.push(checkItem);
+    });
+
     dispatch(
       updateInstallationOrder({
         installationOrderId: installationOrder._id,
-        update: { checkList: checkList },
+        update: { checkList: newCheckList },
       })
     )
       .unwrap()
@@ -48,12 +51,18 @@ const CheckList = ({ navigation, route }) => {
       .catch();
   };
 
-  const submitCheckList = () => {
-    for (let i = 0; i < checkList.length; i++) {
-      if (checkList[i].status === 0) {
+  const submitCheckList = async () => {
+    const newCheckList = [];
+    await listItemRefs.forEach((itemRef) => {
+      const checkItem = itemRef.current.getCheckItem();
+      newCheckList.push(checkItem);
+    });
+
+    for (let i = 0; i < newCheckList.length; i++) {
+      if (newCheckList[i].status === 0) {
         alert(
           "You haven't completed the check item on line " +
-            checkList[i].index +
+            newCheckList[i].index +
             ', please complete it before signing.'
         );
         return;
@@ -73,7 +82,7 @@ const CheckList = ({ navigation, route }) => {
           onPress: async () => {
             setPageLoading(true);
             const update = {
-              checkList: checkList,
+              checkList: newCheckList,
               checkListSignature: {
                 signed: true,
                 time: new Date(),
@@ -121,12 +130,12 @@ const CheckList = ({ navigation, route }) => {
         contentContainerStyle={{ flexGrow: 1 }}
         className="w-11/12 bg-slate-50 mt-3 md:mt-5 rounded-sm border-gray-200 border py-2"
       >
-        {checkList.map((checkItem, index) => (
+        {installationOrder.checkList.map((checkItem, index) => (
           <CheckListItem
             key={index}
             checkItem={checkItem}
-            handleChange={handleChange}
             disabled={installationOrder.checkListSignature.signed}
+            ref={listItemRefs[index]}
           />
         ))}
       </ScrollView>

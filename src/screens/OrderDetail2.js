@@ -14,6 +14,7 @@ import Attachments from '../components/Attachments';
 import * as FileSystem from 'expo-file-system';
 import PDFList from '../components/PDFList';
 import InstallCheckList from '../components/InstallCheckList';
+import InstallationItems from '../components/InstallationItems';
 
 const OrderDetail2 = ({ navigation, route }) => {
   const installationOrderId = route.params.installationOrderId;
@@ -151,6 +152,7 @@ const OrderDetail2 = ({ navigation, route }) => {
             required={true}
             fullfilled={checkItemsFullfilled}
           />
+          {showCheckItems && <InstallationItems />}
         </View>
         {/* Attachements */}
         <View className="border border-blue-100 rounded-lg mx-3 my-3 md:border-2 md:mx-5 md:my-5">
