@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Button from '../components/Button';
 import * as FileSystem from 'expo-file-system';
+import { StatusBar } from 'expo-status-bar';
 
 const EditPhoto = ({ navigation, route }) => {
   const uri = route.params.uri;
@@ -83,6 +84,7 @@ const EditPhoto = ({ navigation, route }) => {
           }}
         />
       </View>
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };

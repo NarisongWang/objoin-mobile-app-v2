@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Button, Input } from '@rneui/themed';
 import * as FileSystem from 'expo-file-system';
+import { StatusBar } from 'expo-status-bar';
 
 const CameraScreen = ({ navigation, route }) => {
   const installationOrderNumber = route.params.installationOrderNumber;
@@ -141,6 +142,7 @@ const CameraScreen = ({ navigation, route }) => {
           </View>
         </TouchableOpacity>
       </View>
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };

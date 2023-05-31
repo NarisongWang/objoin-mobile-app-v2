@@ -19,6 +19,7 @@ import OrderInfo from '../components/OrderInfo';
 import Button from '../components/Button';
 import Attachments from '../components/Attachments';
 import * as FileSystem from 'expo-file-system';
+import { StatusBar } from 'expo-status-bar';
 
 const OrderDetail1 = ({ navigation, route }) => {
   const installationOrderId = route.params.installationOrderId;
@@ -217,6 +218,7 @@ const OrderDetail1 = ({ navigation, route }) => {
           disabled={attachementsFullfilled ? false : true}
         />
       </View>
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };

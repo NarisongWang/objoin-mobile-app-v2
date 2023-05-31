@@ -6,6 +6,7 @@ import Spinner from '../components/Spinner';
 import HeaderTitle from '../components/HeaderTitle';
 //import Pdf from 'react-native-pdf';
 import * as FileSystem from 'expo-file-system';
+import { StatusBar } from 'expo-status-bar';
 
 const PDFScreen = ({ navigation, route }) => {
   const filePath = route.params.filePath;
@@ -60,6 +61,7 @@ const PDFScreen = ({ navigation, route }) => {
         }}
         style={{ flex: 1, width, height }}
       />
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };

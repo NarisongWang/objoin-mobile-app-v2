@@ -4,7 +4,6 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  Pressable,
   Text,
   TouchableOpacity,
   Dimensions,
@@ -21,6 +20,7 @@ import { auth } from '../../firebaseConfig';
 import { MaterialIcons } from '@expo/vector-icons';
 import OrderTableHead from '../components/OrderTableHead';
 import Button from '../components/Button';
+import { StatusBar } from 'expo-status-bar';
 
 const OrderList = ({ navigation }) => {
   const windowWidth = Dimensions.get('window').width;
@@ -192,6 +192,7 @@ const OrderList = ({ navigation }) => {
           </View>
         </View>
       )}
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };

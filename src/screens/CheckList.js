@@ -7,6 +7,7 @@ import HeaderTitle from '../components/HeaderTitle';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import { parseDateAndTime } from '../utils/utils';
+import { StatusBar } from 'expo-status-bar';
 
 const CheckList = ({ navigation, route }) => {
   const installationOrder = route.params.installationOrder;
@@ -156,6 +157,7 @@ const CheckList = ({ navigation, route }) => {
           disabled={installationOrder.checkListSignature.signed}
         />
       </View>
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };

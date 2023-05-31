@@ -13,6 +13,7 @@ import {
 import { Input, Icon } from '@rneui/themed';
 import Spinner from '../components/Spinner';
 import { validateEmail } from '../utils/utils';
+import { StatusBar } from 'expo-status-bar';
 
 const SignIn = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -104,6 +105,7 @@ const SignIn = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };

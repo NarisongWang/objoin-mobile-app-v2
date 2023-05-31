@@ -15,6 +15,7 @@ import * as FileSystem from 'expo-file-system';
 import PDFList from '../components/PDFList';
 import InstallCheckList from '../components/InstallCheckList';
 import InstallationItems from '../components/InstallationItems';
+import { StatusBar } from 'expo-status-bar';
 
 const OrderDetail2 = ({ navigation, route }) => {
   const installationOrderId = route.params.installationOrderId;
@@ -255,6 +256,7 @@ const OrderDetail2 = ({ navigation, route }) => {
           }
         />
       </View>
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };

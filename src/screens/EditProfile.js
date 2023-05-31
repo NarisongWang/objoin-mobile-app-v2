@@ -15,6 +15,7 @@ import * as FileSystem from 'expo-file-system';
 import PDFList from '../components/PDFList';
 import InstallCheckList from '../components/InstallCheckList';
 import InstallationItems from '../components/InstallationItems';
+import { StatusBar } from 'expo-status-bar';
 
 const Component = ({ prop1, prop2 }) => {
   useEffect(() => {
@@ -116,6 +117,7 @@ const EditProfile = ({ navigation, route }) => {
           }
         />
       </View>
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };
