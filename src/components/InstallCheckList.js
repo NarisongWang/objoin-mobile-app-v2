@@ -10,7 +10,7 @@ const InstallCheckList = ({ navigation, installationOrder }) => {
         })
       }
     >
-      <Text className="font-bold italic text-sm md:text-lg m-3 text-blue-600">
+      <Text className="font-bold italic text-sm md:text-lg my-3 mx-5 text-blue-600">
         KITCHEN INSTALL CHECKLIST
       </Text>
     </TouchableOpacity>

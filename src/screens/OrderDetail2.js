@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
-import { SafeAreaView, ScrollView, View, Text } from 'react-native';
+import { SafeAreaView, ScrollView, View, Text, Alert } from 'react-native';
 import {
   getInstallationOrder2,
   submitOrder,
@@ -31,7 +31,8 @@ const OrderDetail2 = ({ navigation, route }) => {
   const [showAttachments, setShowAttachments] = useState(true);
 
   // required submission conditions
-  const [checkItemsFullfilled, setCheckItemsFullfilled] = useState(false);
+  const [installationItemsFullfilled, setInstallationItemsFullfilled] =
+    useState(false);
   const [attachementsFullfilled, setAttachmentsFullfilled] = useState(false);
 
   // photo list
@@ -84,7 +85,57 @@ const OrderDetail2 = ({ navigation, route }) => {
   };
 
   // submit delivery work
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    if (installationOrder.checkListSignature.signed === false) {
+      alert('Please fill and submit the KITCHEN INSTALL CHECKLIST first.');
+      return;
+    }
+    if (!installationItemsFullfilled) {
+      alert('Please check all Installation Items first.');
+      return;
+    }
+    if (photos.length === 0) {
+      alert('Please take at least 1 photo for the installation task.');
+      return;
+    }
+    Alert.alert('', 'Are you sure you want to submit this work?', [
+      {
+        text: 'Cancel',
+        onPress: () => null,
+        style: 'cancel',
+      },
+      {
+        text: 'YES',
+        onPress: () => {
+          const newTimeFrame = {
+            workStatus: installationOrder.workStatus + 1,
+            time: new Date(),
+          };
+          const timeFrames = [...installationOrder.timeFrames, newTimeFrame];
+          const update = {
+            workStatus: installationOrder.workStatus + 1,
+            timeFrames: timeFrames,
+            photos1: photos,
+          };
+          const orderInfo = {
+            installationOrderId: installationOrder._id,
+            installationOrderNumber: installationOrder.installationOrderNumber,
+            userType: 1,
+            update: update,
+          };
+          dispatch(submitOrder(orderInfo))
+            .unwrap()
+            .then(() => {
+              alert(
+                `You have successfully submitted the installation task! Thank you!`
+              );
+              navigation.goBack();
+            })
+            .catch();
+        },
+      },
+    ]);
+  };
 
   if (isLoading) {
     return <Spinner />;
@@ -150,9 +201,17 @@ const OrderDetail2 = ({ navigation, route }) => {
             state={showCheckItems}
             setState={setShowCheckItems}
             required={true}
-            fullfilled={checkItemsFullfilled}
+            fullfilled={installationItemsFullfilled}
           />
-          {showCheckItems && <InstallationItems />}
+          {showCheckItems && (
+            <InstallationItems
+              installationOrderNumber={
+                installationOrder.installationOrderNumber
+              }
+              installationItems={installationOrder.checkItems}
+              setInstallationItemsFullfilled={setInstallationItemsFullfilled}
+            />
+          )}
         </View>
         {/* Attachements */}
         <View className="border border-blue-100 rounded-lg mx-3 my-3 md:border-2 md:mx-5 md:my-5">
@@ -190,7 +249,7 @@ const OrderDetail2 = ({ navigation, route }) => {
           disabled={
             attachementsFullfilled &&
             installationOrder.checkListSignature.signed &&
-            checkItemsFullfilled
+            installationItemsFullfilled
               ? false
               : true
           }

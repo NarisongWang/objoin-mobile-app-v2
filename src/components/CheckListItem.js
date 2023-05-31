@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useImperativeHandle } from 'react';
 import { View, Text, TextInput } from 'react-native';
-import CheckBox from './CheckBox';
+import Radio from './Radio';
 
 const CheckListItem = React.forwardRef(({ checkItem, disabled }, ref) => {
   const [noteInput, setNoteInput] = useState(checkItem.note);
@@ -45,7 +45,7 @@ const CheckListItem = React.forwardRef(({ checkItem, disabled }, ref) => {
       </View>
       {/* Check boxes */}
       <View className="flex-row items-center mx-3">
-        <CheckBox
+        <Radio
           title="YES"
           checked={item.status === 1 ? true : false}
           onCheck={() => {
@@ -53,8 +53,8 @@ const CheckListItem = React.forwardRef(({ checkItem, disabled }, ref) => {
               handleChange(1);
             }
           }}
-        ></CheckBox>
-        <CheckBox
+        ></Radio>
+        <Radio
           title="NO"
           checked={item.status === 2 ? true : false}
           onCheck={() => {
@@ -62,8 +62,8 @@ const CheckListItem = React.forwardRef(({ checkItem, disabled }, ref) => {
               handleChange(2);
             }
           }}
-        ></CheckBox>
-        <CheckBox
+        ></Radio>
+        <Radio
           title="N/A"
           checked={item.status === 3 ? true : false}
           onCheck={() => {
@@ -71,7 +71,7 @@ const CheckListItem = React.forwardRef(({ checkItem, disabled }, ref) => {
               handleChange(3);
             }
           }}
-        ></CheckBox>
+        ></Radio>
       </View>
       {/* Text Notes */}
       <View className="flex-1 items-start justify-center mr-2">

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openPDF } from '../features/installationOrder/installationOrderSlice';
-import { Text, SafeAreaView, useWindowDimensions } from 'react-native';
+import { SafeAreaView, useWindowDimensions } from 'react-native';
 import Spinner from '../components/Spinner';
 import HeaderTitle from '../components/HeaderTitle';
 //import Pdf from 'react-native-pdf';

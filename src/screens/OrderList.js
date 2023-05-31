@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getInstallationOrders,
   updateInstallationOrder,
+  setLoading,
 } from '../features/installationOrder/installationOrderSlice';
 import Spinner from '../components/Spinner';
 import OrderItem from '../components/OrderItem';
@@ -82,6 +83,9 @@ const OrderList = ({ navigation }) => {
       alert('Please select an installation order first.');
       return;
     }
+    //set isLoading state to true before navigating to detail page,
+    //this will avoid rendering the detial page for a very small amount of time before dispatching fetch data function
+    dispatch(setLoading());
     if (role === deliverer) {
       navigation.navigate('Detail1', {
         installationOrderId: select._id,

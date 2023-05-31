@@ -119,7 +119,11 @@ export const openPDF = createAsyncThunk(
 export const installationOrderSlice = createSlice({
   name: 'installationOrder',
   initialState,
-  reducers: {},
+  reducers: {
+    setLoading: (state) => {
+      state.isLoading = true;
+    },
+  },
   extraReducers: (builder) => {
     builder
       //reducers for getInstallationOrders
@@ -203,4 +207,5 @@ export const installationOrderSlice = createSlice({
   },
 });
 
+export const { setLoading } = installationOrderSlice.actions;
 export default installationOrderSlice.reducer;

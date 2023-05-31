@@ -34,7 +34,11 @@ const CustomDrawerContent = ({ navigation }) => {
       <DrawerItem
         className="bg-slate-400"
         label="Edit Profile"
-        onPress={() => navigation.navigate('EditProfile')}
+        onPress={() =>
+          navigation.navigate('EditProfile', {
+            installationOrderId: '6440bbc78538c5f7c36e719e',
+          })
+        }
       />
       <DrawerItem label="Signout" onPress={handleSignOut} />
     </DrawerContentScrollView>

@@ -1,52 +1,122 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
+import { SafeAreaView, ScrollView, View, Text } from 'react-native';
+import {
+  getInstallationOrder2,
+  submitOrder,
+} from '../features/installationOrder/installationOrderSlice';
+import Spinner from '../components/Spinner';
+import FoldBar from '../components/FoldBar';
+import OrderInfo from '../components/OrderInfo';
+import Button from '../components/Button';
 import Attachments from '../components/Attachments';
+import * as FileSystem from 'expo-file-system';
+import PDFList from '../components/PDFList';
+import InstallCheckList from '../components/InstallCheckList';
+import InstallationItems from '../components/InstallationItems';
 
-const Component1 = ({ state1 }) => {
+const Component = ({ prop1, prop2 }) => {
   useEffect(() => {
-    console.log('Component1 rerendered');
+    console.log('Initialize children');
   }, []);
-  console.log('---Component1 rerendered');
-  return <Text>{state1}</Text>;
-};
 
-const Component2 = ({ state2 }) => {
-  useEffect(() => {
-    console.log('Component2 rerendered');
-  }, []);
-  console.log('---Component1 rerendered');
-  return <Text>{state2}</Text>;
-};
-
-const EditProfile = () => {
-  const [state1, setState1] = useState('state1');
-  const [state2, setState2] = useState('state2');
-  const [photos, setPhotos] = useState([
-    'S2211051/photos0/last.jpg',
-    'S2211051/photos0/onemore.jpg',
-    'S2211051/photos0/photo1.jpg',
-  ]);
   return (
     <View className="flex-1 items-center justify-center bg-white">
-      <Component1 state1={state1} />
-      <Component2 state2={state2} />
-      <View className="border border-blue-100 rounded-lg mx-3 mt-3 md:border-2 md:mx-5 md:mt-5">
-        <Attachments photos={photos} />
-      </View>
-
-      <Button
-        onPress={() => {
-          setState1('new state1');
-        }}
-        title="Change State 1"
-      />
-      <Button
-        onPress={() => {
-          setState2('new state2');
-        }}
-        title="Change State 2"
-      />
+      <Text>{prop1}</Text>
+      <Text>{prop2}</Text>
     </View>
+  );
+};
+
+const EditProfile = ({ navigation, route }) => {
+  const installationOrderId = route.params.installationOrderId;
+  installationOrderNumber = '2211072';
+  const { installationOrder, files, isLoading, error } = useSelector(
+    (state) => state.installationOrder
+  );
+  dispatch = useDispatch();
+
+  // folding bar status
+  const [showOrderInfo, setShowOrderInfo] = useState(true);
+  const [showPdfFiles, setShowPdfFiles] = useState(true);
+  const [showCheckList, setShowCheckList] = useState(true);
+  const [showCheckItems, setShowCheckItems] = useState(true);
+  const [showAttachments, setShowAttachments] = useState(true);
+
+  // required submission conditions
+  const [checkItemsFullfilled, setCheckItemsFullfilled] = useState(false);
+  const [attachementsFullfilled, setAttachmentsFullfilled] = useState(false);
+
+  // initialize order detail screen
+  useEffect(() => {
+    console.log('Initialize parent');
+    dispatch(getInstallationOrder2(installationOrderId));
+  }, []);
+
+  // handle error
+  useEffect(() => {
+    if (error !== '') {
+      alert(error);
+      if (!installationOrder.installationOrderNumber) {
+        navigation.goBack();
+      }
+    }
+  }, [error]);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  return (
+    <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      {/* Order Details */}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        className="w-11/12 bg-slate-50 my-3 md:my-5 rounded-lg border-gray-200 border md:rounded-3xl"
+      >
+        {/* Installation Items */}
+        <View className="border border-blue-100 rounded-lg mx-3 mt-3 md:border-2 md:mx-5 md:mt-5">
+          <FoldBar
+            title="Installation Items"
+            state={showCheckItems}
+            setState={setShowCheckItems}
+            required={true}
+            fullfilled={checkItemsFullfilled}
+          />
+          {showCheckItems && (
+            <InstallationItems
+              installationOrderNumber={
+                installationOrder.installationOrderNumber
+              }
+              installationItems={installationOrder.checkItems}
+              setCheckItemsFullfilled={setCheckItemsFullfilled}
+            />
+          )}
+        </View>
+      </ScrollView>
+      <View className="flex flex-row items-center justify-between h-[70] md:h-[100] w-4/5">
+        <Button
+          title="TIMEOUT"
+          pressEvent={() => {
+            navigation.goBack();
+          }}
+        />
+        <Button
+          title="COMPLETE"
+          pressEvent={() => {
+            onSubmit();
+          }}
+          disabled={
+            attachementsFullfilled &&
+            installationOrder.checkListSignature.signed &&
+            checkItemsFullfilled
+              ? false
+              : true
+          }
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
