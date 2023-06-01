@@ -39,7 +39,7 @@ const ManageAccount = ({ navigation }) => {
   const [newPassword2, setNewPassword2] = useState('');
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isErrorModal, setIsErrorModal] = useState(true);
+  const [modalType, setModalType] = useState(0);
   const [modalMessage, setModalMessage] = useState('');
 
   const onUpdate = () => {
@@ -53,7 +53,7 @@ const ManageAccount = ({ navigation }) => {
         setShowEditForm(false);
         //show modal success
         setModalMessage('You have successfully updated your profile.');
-        setIsErrorModal(false);
+        setModalType(1);
         setIsModalVisible(true);
       })
       .catch((error) => {
@@ -61,7 +61,7 @@ const ManageAccount = ({ navigation }) => {
         setShowEditForm(false);
         //show modal error
         setModalMessage(error.message);
-        setIsErrorModal(true);
+        setModalType(0);
         setIsModalVisible(true);
       });
   };
@@ -76,7 +76,7 @@ const ManageAccount = ({ navigation }) => {
           showChangePassForm(false);
           //show modal success
           setModalMessage('You have successfully reset your password.');
-          setIsErrorModal(false);
+          setModalType(1);
           setIsModalVisible(true);
         });
       })
@@ -84,7 +84,7 @@ const ManageAccount = ({ navigation }) => {
         setIsLoading(false);
         //show modal error
         setModalMessage(error.message);
-        setIsErrorModal(true);
+        setModalType(0);
         setIsModalVisible(true);
       });
   };
@@ -98,7 +98,7 @@ const ManageAccount = ({ navigation }) => {
       <ModalBox
         isModalVisible={isModalVisible}
         modalMessage={modalMessage}
-        isError={isErrorModal}
+        modalType={modalType}
         setIsModalVisible={setIsModalVisible}
       />
       <ScrollView

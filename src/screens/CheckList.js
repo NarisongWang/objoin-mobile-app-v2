@@ -1,18 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateInstallationOrder } from '../features/installationOrder/installationOrderSlice';
-import { SafeAreaView, ScrollView, View, Text, Alert } from 'react-native';
+import { SafeAreaView, ScrollView, View, Text } from 'react-native';
 import CheckListItem from '../components/CheckListItem';
 import HeaderTitle from '../components/HeaderTitle';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
+import ModalBox from '../components/ModalBox';
 import { parseDateAndTime } from '../utils/utils';
 import { StatusBar } from 'expo-status-bar';
 
-const CheckList = ({ navigation, route }) => {
-  const installationOrder = route.params.installationOrder;
+const CheckList = ({ navigation }) => {
   const [pageLoading, setPageLoading] = useState(true);
-  const { isLoading } = useSelector((state) => state.installationOrder);
+  const { installationOrder, isLoading } = useSelector(
+    (state) => state.installationOrder
+  );
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalType, setModalType] = useState(0);
+  const [modalMessage, setModalMessage] = useState('');
 
   const dispatch = useDispatch();
 
@@ -52,7 +59,16 @@ const CheckList = ({ navigation, route }) => {
       .catch();
   };
 
+  const wait = () => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, 2000);
+    });
+  };
+
   const submitCheckList = async () => {
+    setModalLoading(true);
+    setIsModalVisible(true);
+    await wait();
     const newCheckList = [];
     await listItemRefs.forEach((itemRef) => {
       const checkItem = itemRef.current.getCheckItem();
@@ -61,50 +77,60 @@ const CheckList = ({ navigation, route }) => {
 
     for (let i = 0; i < newCheckList.length; i++) {
       if (newCheckList[i].status === 0) {
-        alert(
+        //show modal warning
+        setModalMessage(
           "You haven't completed the check item on line " +
             newCheckList[i].index +
-            ', please complete it before signing.'
+            ', please complete it before submit.'
         );
+        setModalType(2);
+        setModalLoading(false);
         return;
       }
     }
-    Alert.alert(
-      'Submit the check list?',
-      'After submitting this form, the content cannot be changed anymore, continue?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        {
-          text: 'YES',
-          onPress: async () => {
-            setPageLoading(true);
-            const update = {
-              checkList: newCheckList,
-              checkListSignature: {
-                signed: true,
-                time: new Date(),
-              },
-            };
-            dispatch(
-              updateInstallationOrder({
-                installationOrderId: installationOrder._id,
-                update: update,
-              })
-            )
-              .unwrap()
-              .then(() => {
-                alert('Install checklist has been completed!');
-                navigation.goBack();
-              })
-              .catch();
-          },
-        },
-      ]
+    setModalLoading(false);
+    //show modal dialog
+    setModalMessage(
+      'After submitting this form, the content cannot be changed anymore, continue?'
     );
+    setModalType(3);
+    setIsModalVisible(true);
+    setModalLoading(false);
+  };
+
+  const handleConfirm = async () => {
+    const newCheckList = [];
+    await listItemRefs.forEach((itemRef) => {
+      const checkItem = itemRef.current.getCheckItem();
+      newCheckList.push(checkItem);
+    });
+    const update = {
+      checkList: newCheckList,
+      checkListSignature: {
+        signed: true,
+        time: new Date(),
+      },
+    };
+    dispatch(
+      updateInstallationOrder({
+        installationOrderId: installationOrder._id,
+        update: update,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        //show modal success
+        setModalMessage('Install checklist has been completed!');
+        setModalType(1);
+        setIsModalVisible(true);
+      })
+      .catch((error) => {
+        setPageLoading(false);
+        //show modal error
+        setModalMessage(error.message);
+        setModalType(0);
+        setIsModalVisible(true);
+      });
   };
 
   if (pageLoading || isLoading) {
@@ -112,6 +138,14 @@ const CheckList = ({ navigation, route }) => {
   }
   return (
     <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      <ModalBox
+        isModalVisible={isModalVisible}
+        modalMessage={modalMessage}
+        modalType={modalType}
+        setIsModalVisible={setIsModalVisible}
+        isLoading={modalLoading}
+        onConfirm={handleConfirm}
+      />
       {installationOrder.checkListSignature.signed && (
         <View className="flex-row items-center justify-center">
           <Text className="mt-3 font-bold text-xs md:mt-5 md:text-lg">

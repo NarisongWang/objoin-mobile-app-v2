@@ -97,7 +97,7 @@ const CheckListItem = React.forwardRef(({ checkItem, disabled }, ref) => {
       </View>
       <View className="flex-1 items-start justify-center pr-5">
         <TextInput
-          className="border border-gray-300 m-2 md:border-2 w-full mr-2"
+          className="border p-2 border-gray-300 m-2 md:border-2 w-full mr-2"
           value={noteInput}
           multiline={true}
           numberOfLines={4}

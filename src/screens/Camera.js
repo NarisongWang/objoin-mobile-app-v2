@@ -9,7 +9,8 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-import { Button, Input } from '@rneui/themed';
+import { Input } from '@rneui/themed';
+import ModalBox from '../components/ModalBox';
 import * as FileSystem from 'expo-file-system';
 import { StatusBar } from 'expo-status-bar';
 
@@ -17,9 +18,14 @@ const CameraScreen = ({ navigation, route }) => {
   const installationOrderNumber = route.params.installationOrderNumber;
   const userType = route.params.userType;
   let cameraRef = useRef();
+
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [photo, setPhoto] = useState();
   const [photoName, setPhotoName] = useState('');
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalType, setModalType] = useState(0);
+  const [modalMessage, setModalMessage] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -52,7 +58,10 @@ const CameraScreen = ({ navigation, route }) => {
   if (photo) {
     let savePhoto = async () => {
       if (photoName === '') {
-        alert('Please enter a photo name first!');
+        //show modal error
+        setModalMessage('Please enter a photo name first.');
+        setModalType(0);
+        setIsModalVisible(true);
         return;
       }
       //check work order directory
@@ -73,7 +82,12 @@ const CameraScreen = ({ navigation, route }) => {
           )
         ).exists
       ) {
-        alert('The photo name already exists, please change another name!');
+        //show modal error
+        setModalMessage(
+          'The photo name already exists, please change another name.'
+        );
+        setModalType(0);
+        setIsModalVisible(true);
         return;
       }
 
@@ -83,15 +97,27 @@ const CameraScreen = ({ navigation, route }) => {
           photo.base64,
           { encoding: FileSystem.EncodingType.Base64 }
         );
-        alert(`${photoName.trim()}.jpg has been successfully saved!`);
+        //show modal success
+        setModalMessage(photoName.trim() + '.jpg has been successfully saved!');
+        setModalType(1);
+        setIsModalVisible(true);
       } catch (error) {
-        alert('Error: ' + error);
+        //show modal error
+        setModalMessage(error.message);
+        setModalType(0);
+        setIsModalVisible(true);
       }
       setPhotoName('');
       setPhoto(undefined);
     };
     return (
       <SafeAreaView className="flex-1 bg-white">
+        <ModalBox
+          isModalVisible={isModalVisible}
+          modalMessage={modalMessage}
+          modalType={modalType}
+          setIsModalVisible={setIsModalVisible}
+        />
         <Image
           style={cameraStyles.preview}
           source={{ uri: 'data:image/jpg;base64,' + photo.base64 }}
@@ -129,8 +155,13 @@ const CameraScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView className="flex-1 bg-black">
+      <ModalBox
+        isModalVisible={isModalVisible}
+        modalMessage={modalMessage}
+        modalType={modalType}
+        setIsModalVisible={setIsModalVisible}
+      />
       <Camera className="flex-1" ref={cameraRef}></Camera>
-
       <View className="bg-black p-3 w-full flex items-center justify-center border-t border-white">
         <TouchableOpacity onPress={takePic}>
           <View className="flex justify-center items-center">

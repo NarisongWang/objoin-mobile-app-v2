@@ -188,12 +188,7 @@ const OrderDetail2 = ({ navigation, route }) => {
                 : false
             }
           />
-          {showCheckList && (
-            <InstallCheckList
-              installationOrder={installationOrder}
-              navigation={navigation}
-            />
-          )}
+          {showCheckList && <InstallCheckList navigation={navigation} />}
         </View>
         {/* Installation Items */}
         <View className="border border-blue-100 rounded-lg mx-3 mt-3 md:border-2 md:mx-5 md:mt-5">
