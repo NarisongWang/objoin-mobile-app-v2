@@ -10,7 +10,7 @@ import CameraScreen from '../screens/Camera';
 import EditPhoto from '../screens/EditPhoto';
 import PDFScreen from '../screens/PDFScreen';
 import CheckList from '../screens/CheckList';
-import EditProfile from '../screens/EditProfile';
+import ManageAccount from '../screens/ManageAccount';
 
 const AppMainStack = () => {
   const MainStack = createNativeStackNavigator();
@@ -90,11 +90,11 @@ const AppMainStack = () => {
         }}
       />
       <MainStack.Screen
-        name="EditProfile"
-        component={EditProfile}
+        name="ManageAccount"
+        component={ManageAccount}
         options={{
           headerTitle: () => {
-            return <HeaderTitle title="OBJOIN - Edit Profile" />;
+            return <HeaderTitle title="OBJOIN - Manage Account" />;
           },
           headerRight: () => {
             return <HeaderRightButton user={user} />;
