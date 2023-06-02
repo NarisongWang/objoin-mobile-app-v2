@@ -16,6 +16,7 @@ import {
 } from '../features/installationOrder/installationOrderSlice';
 import Spinner from '../components/Spinner';
 import OrderItem from '../components/OrderItem';
+import ModalBox from '../components/ModalBox';
 import { auth } from '../../firebaseConfig';
 import { MaterialIcons } from '@expo/vector-icons';
 import OrderTableHead from '../components/OrderTableHead';
@@ -28,6 +29,11 @@ const OrderList = ({ navigation }) => {
     (state) => state.installationOrder
   );
   const [select, setSelect] = useState(null);
+
+  //modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalType, setModalType] = useState(0);
+  const [modalMessage, setModalMessage] = useState('');
 
   const dispatch = useDispatch();
 
@@ -42,7 +48,10 @@ const OrderList = ({ navigation }) => {
   // handle error
   useEffect(() => {
     if (error !== '') {
-      alert(error);
+      //show modal error
+      setModalMessage(error.message);
+      setModalType(0);
+      setIsModalVisible(true);
     }
   }, [error]);
 
@@ -80,7 +89,10 @@ const OrderList = ({ navigation }) => {
     const deliverer = USER_ROLES.split('|')[2];
     const installer = USER_ROLES.split('|')[3];
     if (!select) {
-      alert('Please select an installation order first.');
+      //show modal warning
+      setModalMessage('Please select an installation order first.');
+      setModalType(2);
+      setIsModalVisible(true);
       return;
     }
     //set isLoading state to true before navigating to detail page,
@@ -128,6 +140,13 @@ const OrderList = ({ navigation }) => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
+      {/* Modal box */}
+      <ModalBox
+        isModalVisible={isModalVisible}
+        modalMessage={modalMessage}
+        modalType={modalType}
+        setIsModalVisible={setIsModalVisible}
+      />
       {installationOrders && installationOrders.length === 0 ? (
         <Text className="text-blue-600 italic text-xl text-center m-10">
           *No available installation orders found.

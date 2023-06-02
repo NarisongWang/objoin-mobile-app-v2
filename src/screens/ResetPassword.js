@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Input, Icon } from '@rneui/themed';
 import Spinner from '../components/Spinner';
+import ModalBox from '../components/ModalBox';
 import { validateEmail } from '../utils/utils';
 import { StatusBar } from 'expo-status-bar';
 
@@ -19,13 +20,17 @@ const ResetPassword = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  //modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalType, setModalType] = useState(0);
+  const [modalMessage, setModalMessage] = useState('');
+
   const onResetPassword = () => {
     if (!validateEmail(email)) {
-      alert('This is not a valid email address!');
-      return;
-    }
-    if (password === '') {
-      alert('Please enter password!');
+      //show modal warning
+      setModalMessage('This is not a valid email address!');
+      setModalType(2);
+      setIsModalVisible(true);
       return;
     }
     setIsLoading(true);
@@ -33,11 +38,17 @@ const ResetPassword = ({ navigation }) => {
       .then(() => {
         // Reset password success
         setIsLoading(false);
-        Alert('Password Reset Email has been sent to ' + email);
+        //show modal success
+        setModalMessage('Password Reset Email has been sent to ' + email);
+        setModalType(1);
+        setIsModalVisible(true);
       })
       .catch((error) => {
         setIsLoading(false);
-        alert(error.message);
+        //show modal success
+        setModalMessage(error.message);
+        setModalType(0);
+        setIsModalVisible(true);
       });
   };
 
@@ -47,6 +58,13 @@ const ResetPassword = ({ navigation }) => {
 
   return (
     <SafeAreaView className="flex-1 bg-white ">
+      {/* Modal box */}
+      <ModalBox
+        isModalVisible={isModalVisible}
+        modalMessage={modalMessage}
+        modalType={modalType}
+        setIsModalVisible={setIsModalVisible}
+      />
       <ScrollView>
         {/* Reset Password form */}
         <View className="items-center mx-5 md:mx-10">

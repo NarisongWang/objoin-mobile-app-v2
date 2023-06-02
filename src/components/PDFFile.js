@@ -14,7 +14,7 @@ const PDFFile = ({ filePath, fileName, navigation }) => {
         }}
       >
         <Image
-          className="h-10 w-10 md:h-16 md:w-16"
+          className="h-10 w-10 md:h-14 md:w-14"
           source={require('../../assets/pdf.png')}
         ></Image>
         <Text className="w-28 ml-2 text-center text-xs md:w-36 md:text-base">

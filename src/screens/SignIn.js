@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Input, Icon } from '@rneui/themed';
 import Spinner from '../components/Spinner';
+import ModalBox from '../components/ModalBox';
 import { validateEmail } from '../utils/utils';
 import { StatusBar } from 'expo-status-bar';
 
@@ -21,13 +22,24 @@ const SignIn = ({ navigation }) => {
   const [passVisible, setPassVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  //modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalType, setModalType] = useState(0);
+  const [modalMessage, setModalMessage] = useState('');
+
   const onSignIn = () => {
     if (!validateEmail(email)) {
-      alert('This is not a valid email address!');
+      //show modal warning
+      setModalMessage('This is not a valid email address!');
+      setModalType(2);
+      setIsModalVisible(true);
       return;
     }
     if (password === '') {
-      alert('Please enter password!');
+      //show modal warning
+      setModalMessage('Please enter password!');
+      setModalType(2);
+      setIsModalVisible(true);
       return;
     }
     setIsLoading(true);
@@ -38,7 +50,10 @@ const SignIn = ({ navigation }) => {
       })
       .catch((error) => {
         setIsLoading(false);
-        alert(error.message);
+        //show modal warning
+        setModalMessage(error.message);
+        setModalType(0);
+        setIsModalVisible(true);
       });
   };
 
@@ -48,6 +63,13 @@ const SignIn = ({ navigation }) => {
 
   return (
     <SafeAreaView className="flex-1 bg-white ">
+      {/* Modal box */}
+      <ModalBox
+        isModalVisible={isModalVisible}
+        modalMessage={modalMessage}
+        modalType={modalType}
+        setIsModalVisible={setIsModalVisible}
+      />
       <ScrollView>
         {/* Sign in form */}
         <View className="items-center mx-5 md:mx-10">

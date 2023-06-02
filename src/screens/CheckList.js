@@ -20,6 +20,7 @@ const CheckList = ({ navigation }) => {
   const [modalLoading, setModalLoading] = useState(false);
   const [modalType, setModalType] = useState(0);
   const [modalMessage, setModalMessage] = useState('');
+  const [pressAndGoBack, setPressAndGoBack] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -89,7 +90,7 @@ const CheckList = ({ navigation }) => {
       }
     }
     setModalLoading(false);
-    //show modal dialog
+    //show confirm dialog
     setModalMessage(
       'After submitting this form, the content cannot be changed anymore, continue?'
     );
@@ -119,8 +120,9 @@ const CheckList = ({ navigation }) => {
     )
       .unwrap()
       .then(() => {
-        //show modal success
+        //show modal success and go back
         setModalMessage('Install checklist has been completed!');
+        setPressAndGoBack(true);
         setModalType(1);
         setIsModalVisible(true);
       })
@@ -131,6 +133,10 @@ const CheckList = ({ navigation }) => {
         setModalType(0);
         setIsModalVisible(true);
       });
+  };
+
+  const goBack = () => {
+    navigation.goBack();
   };
 
   if (pageLoading || isLoading) {
@@ -144,7 +150,9 @@ const CheckList = ({ navigation }) => {
         modalType={modalType}
         setIsModalVisible={setIsModalVisible}
         isLoading={modalLoading}
+        pressAndGoBack={pressAndGoBack}
         onConfirm={handleConfirm}
+        goBack={goBack}
       />
       {installationOrder.checkListSignature.signed && (
         <View className="flex-row items-center justify-center">

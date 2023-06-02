@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
-import { SafeAreaView, ScrollView, View, Text, Alert } from 'react-native';
+import { SafeAreaView, ScrollView, View, Text } from 'react-native';
 import {
   getInstallationOrder2,
   submitOrder,
@@ -11,6 +11,7 @@ import FoldBar from '../components/FoldBar';
 import OrderInfo from '../components/OrderInfo';
 import Button from '../components/Button';
 import Attachments from '../components/Attachments';
+import ModalBox from '../components/ModalBox';
 import * as FileSystem from 'expo-file-system';
 import PDFList from '../components/PDFList';
 import InstallCheckList from '../components/InstallCheckList';
@@ -39,6 +40,12 @@ const OrderDetail2 = ({ navigation, route }) => {
   // photo list
   const [photos, setPhotos] = useState([]);
 
+  //modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalType, setModalType] = useState(0);
+  const [modalMessage, setModalMessage] = useState('');
+  const [pressAndGoBack, setPressAndGoBack] = useState(false);
+
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
@@ -51,10 +58,10 @@ const OrderDetail2 = ({ navigation, route }) => {
   // handle error
   useEffect(() => {
     if (error !== '') {
-      alert(error);
-      if (!installationOrder.installationOrderNumber) {
-        navigation.goBack();
-      }
+      //show modal error
+      setModalMessage(error.message);
+      setModalType(0);
+      setIsModalVisible(true);
     }
   }, [error]);
 
@@ -88,54 +95,74 @@ const OrderDetail2 = ({ navigation, route }) => {
   // submit delivery work
   const onSubmit = () => {
     if (installationOrder.checkListSignature.signed === false) {
-      alert('Please fill and submit the KITCHEN INSTALL CHECKLIST first.');
+      //show modal warning
+      setModalMessage(
+        'Please fill and submit the KITCHEN INSTALL CHECKLIST first.'
+      );
+      setModalType(2);
+      setIsModalVisible(true);
       return;
     }
     if (!installationItemsFullfilled) {
-      alert('Please check all Installation Items first.');
+      //show modal warning
+      setModalMessage('Please check all Installation Items first.');
+      setModalType(2);
+      setIsModalVisible(true);
       return;
     }
     if (photos.length === 0) {
-      alert('Please take at least 1 photo for the installation task.');
+      //show modal warning
+      setModalMessage(
+        'Please take at least 1 photo for the installation task.'
+      );
+      setModalType(2);
+      setIsModalVisible(true);
       return;
     }
-    Alert.alert('', 'Are you sure you want to submit this work?', [
-      {
-        text: 'Cancel',
-        onPress: () => null,
-        style: 'cancel',
-      },
-      {
-        text: 'YES',
-        onPress: () => {
-          const newTimeFrame = {
-            workStatus: installationOrder.workStatus + 1,
-            time: new Date(),
-          };
-          const timeFrames = [...installationOrder.timeFrames, newTimeFrame];
-          const update = {
-            workStatus: installationOrder.workStatus + 1,
-            timeFrames: timeFrames,
-            photos1: photos,
-          };
-          const orderInfo = {
-            installationOrderId: installationOrder._id,
-            installationOrderNumber: installationOrder.installationOrderNumber,
-            userType: 1,
-            update: update,
-          };
-          dispatch(submitOrder(orderInfo))
-            .unwrap()
-            .then(() => {
-              alert(
-                `You have successfully submitted the installation task! Thank you!`
-              );
-              navigation.goBack();
-            })
-            .catch();
-        },
-      },
-    ]);
+    //show confirm dialog
+    setModalMessage('Do you want to submit this work?');
+    setModalType(3);
+    setIsModalVisible(true);
+  };
+
+  const goBack = () => {
+    navigation.goBack();
+  };
+
+  const handleConfirm = async () => {
+    const newTimeFrame = {
+      workStatus: installationOrder.workStatus + 1,
+      time: new Date(),
+    };
+    const timeFrames = [...installationOrder.timeFrames, newTimeFrame];
+    const update = {
+      workStatus: installationOrder.workStatus + 1,
+      timeFrames: timeFrames,
+      photos1: photos,
+    };
+    const orderInfo = {
+      installationOrderId: installationOrder._id,
+      installationOrderNumber: installationOrder.installationOrderNumber,
+      userType: 1,
+      update: update,
+    };
+    dispatch(submitOrder(orderInfo))
+      .unwrap()
+      .then(() => {
+        //show modal success and go back
+        setModalMessage(
+          'You have successfully submitted the installation task! Thank you!!'
+        );
+        setPressAndGoBack(true);
+        setModalType(1);
+        setIsModalVisible(true);
+      })
+      .catch((error) => {
+        //show modal error
+        setModalMessage(error.message);
+        setModalType(0);
+        setIsModalVisible(true);
+      });
   };
 
   if (isLoading) {
@@ -144,6 +171,16 @@ const OrderDetail2 = ({ navigation, route }) => {
 
   return (
     <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      {/* Modal box */}
+      <ModalBox
+        isModalVisible={isModalVisible}
+        modalMessage={modalMessage}
+        modalType={modalType}
+        setIsModalVisible={setIsModalVisible}
+        pressAndGoBack={pressAndGoBack}
+        onConfirm={handleConfirm}
+        goBack={goBack}
+      />
       {/* Order Details */}
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
