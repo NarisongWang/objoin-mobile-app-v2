@@ -18,7 +18,6 @@ const PDFScreen = ({ navigation, route }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalType, setModalType] = useState(0);
   const [modalMessage, setModalMessage] = useState('');
-  const [pressAndGoBack, setPressAndGoBack] = useState(false);
 
   const dispatch = useDispatch();
   const { width, height } = useWindowDimensions();
@@ -42,15 +41,10 @@ const PDFScreen = ({ navigation, route }) => {
     if (error !== '') {
       //show modal error and go back
       setModalMessage(error.message);
-      setPressAndGoBack(true);
       setModalType(0);
       setIsModalVisible(true);
     }
   }, [error]);
-
-  const goBack = () => {
-    navigation.goBack();
-  };
 
   if (isLoading) {
     return <Spinner />;
@@ -64,8 +58,6 @@ const PDFScreen = ({ navigation, route }) => {
         modalMessage={modalMessage}
         modalType={modalType}
         setIsModalVisible={setIsModalVisible}
-        pressAndGoBack={pressAndGoBack}
-        goBack={goBack}
       />
       <Pdf
         maxScale={10}
