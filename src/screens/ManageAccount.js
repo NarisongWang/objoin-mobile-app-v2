@@ -66,16 +66,16 @@ const ManageAccount = ({ navigation }) => {
       });
   };
 
-  const onResetPass = (e) => {
+  const onChangePass = () => {
     setIsLoading(true);
     const credential = EmailAuthProvider.credential(user.email, oldPassword);
     reauthenticateWithCredential(user, credential)
       .then(() => {
         updatePassword(user, newPassword).then(() => {
           setIsLoading(false);
-          showChangePassForm(false);
+          setShowChangePassForm(false);
           //show modal success
-          setModalMessage('You have successfully reset your password.');
+          setModalMessage('You have successfully updated your password.');
           setModalType(1);
           setIsModalVisible(true);
         });
@@ -300,7 +300,7 @@ const ManageAccount = ({ navigation }) => {
                   newPassword !== '' &&
                   newPassword === newPassword2
                 ) {
-                  onResetPass();
+                  onChangePass();
                 }
               }}
             >
