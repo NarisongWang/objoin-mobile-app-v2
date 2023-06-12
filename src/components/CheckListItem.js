@@ -38,7 +38,14 @@ const CheckListItem = React.forwardRef(({ checkItem, disabled }, ref) => {
   return item.title !== 'Other notes' ? (
     <View className="flex-row border-b border-gray-300 py-1">
       {/* Check Item Title */}
-      <View className=" items-start justify-center ml-3 my-1 w-[100] md:w-[200]">
+      <View className="flex-row items-center ml-3 my-1 w-[100] md:w-[200]">
+        <Text
+          className={`text-xxs md:text-sm ${
+            item.status === 0 ? 'text-red-500' : 'text-green-600'
+          }  mr-2`}
+        >
+          *
+        </Text>
         <Text className="text-xxs md:text-sm">
           {item.index} - {item.title}
         </Text>

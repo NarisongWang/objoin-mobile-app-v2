@@ -8,7 +8,7 @@ import { View, Image, Pressable, Text } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
 import AppMainStack from './AppMainStack';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 
 const CustomDrawerContent = ({ navigation }) => {
   const user = auth.currentUser;
@@ -44,6 +44,21 @@ const CustomDrawerContent = ({ navigation }) => {
           </Text>
           <View className="mr-2">
             <FontAwesome5 name="user-edit" size={15} color="rgb(55,65,81)" />
+          </View>
+        </Pressable>
+        <Pressable
+          className="w-11/12 flex flex-row justify-between p-2 items-center m-2"
+          onPress={() => {}}
+        >
+          <Text className="text-gray-600 font-bold text-sm md:text-base ml-2">
+            User Manual
+          </Text>
+          <View className="mr-2">
+            <FontAwesome
+              name="question-circle"
+              size={15}
+              color="rgb(55,65,81)"
+            />
           </View>
         </Pressable>
         <Pressable

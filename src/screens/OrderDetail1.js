@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-  TextInput,
-  Alert,
-} from 'react-native';
+import { SafeAreaView, ScrollView, View, Text, TextInput } from 'react-native';
 import {
   getInstallationOrder1,
   submitOrder,
@@ -18,6 +11,7 @@ import FoldBar from '../components/FoldBar';
 import OrderInfo from '../components/OrderInfo';
 import Button from '../components/Button';
 import Attachments from '../components/Attachments';
+import ModalBox from '../components/ModalBox';
 import * as FileSystem from 'expo-file-system';
 import { StatusBar } from 'expo-status-bar';
 
@@ -42,6 +36,12 @@ const OrderDetail1 = ({ navigation, route }) => {
   // photo list
   const [photos, setPhotos] = useState([]);
 
+  //modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalType, setModalType] = useState(0);
+  const [modalMessage, setModalMessage] = useState('');
+  const [pressAndGoBack, setPressAndGoBack] = useState(false);
+
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
@@ -54,10 +54,10 @@ const OrderDetail1 = ({ navigation, route }) => {
   // handle error
   useEffect(() => {
     if (error !== '') {
-      alert(error);
-      if (!installationOrder.installationOrderNumber) {
-        navigation.goBack();
-      }
+      //show modal error
+      setModalMessage(error.message);
+      setModalType(0);
+      setIsModalVisible(true);
     }
   }, [error]);
 
@@ -91,47 +91,58 @@ const OrderDetail1 = ({ navigation, route }) => {
   // submit delivery work
   const onSubmit = () => {
     if (photos.length === 0) {
-      alert('Please take at least 1 photo for your installation.');
+      //show modal warning
+      setModalMessage('Please take at least 1 photo for your installation.');
+      setModalType(2);
+      setIsModalVisible(true);
       return;
     }
-    Alert.alert('', 'Are you sure you want to submit this work?', [
-      {
-        text: 'Cancel',
-        onPress: () => null,
-        style: 'cancel',
-      },
-      {
-        text: 'YES',
-        onPress: () => {
-          const newTimeFrame = {
-            workStatus: installationOrder.workStatus + 1,
-            time: new Date(),
-          };
-          const timeFrames = [...installationOrder.timeFrames, newTimeFrame];
-          const update = {
-            workStatus: installationOrder.workStatus + 1,
-            timeFrames: timeFrames,
-            photos0: photos,
-            deliveryComment: noteInput,
-          };
-          const orderInfo = {
-            installationOrderId: installationOrder._id,
-            installationOrderNumber: installationOrder.installationOrderNumber,
-            userType: 0,
-            update: update,
-          };
-          dispatch(submitOrder(orderInfo))
-            .unwrap()
-            .then(() => {
-              alert(
-                `You have successfully submitted the delivery task! Thank you!`
-              );
-              navigation.goBack();
-            })
-            .catch();
-        },
-      },
-    ]);
+
+    //show confirm dialog
+    setModalMessage('Do you want to submit this work?');
+    setModalType(3);
+    setIsModalVisible(true);
+  };
+
+  const goBack = () => {
+    navigation.goBack();
+  };
+
+  const handleConfirm = async () => {
+    const newTimeFrame = {
+      workStatus: installationOrder.workStatus + 1,
+      time: new Date(),
+    };
+    const timeFrames = [...installationOrder.timeFrames, newTimeFrame];
+    const update = {
+      workStatus: installationOrder.workStatus + 1,
+      timeFrames: timeFrames,
+      photos0: photos,
+      deliveryComment: noteInput,
+    };
+    const orderInfo = {
+      installationOrderId: installationOrder._id,
+      installationOrderNumber: installationOrder.installationOrderNumber,
+      userType: 0,
+      update: update,
+    };
+    dispatch(submitOrder(orderInfo))
+      .unwrap()
+      .then(() => {
+        //show modal success and go back
+        setModalMessage(
+          'You have successfully submitted the delivery task! Thank you!!'
+        );
+        setPressAndGoBack(true);
+        setModalType(1);
+        setIsModalVisible(true);
+      })
+      .catch((error) => {
+        //show modal error
+        setModalMessage(error.message);
+        setModalType(0);
+        setIsModalVisible(true);
+      });
   };
 
   if (isLoading) {
@@ -140,6 +151,16 @@ const OrderDetail1 = ({ navigation, route }) => {
 
   return (
     <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      {/* Modal box */}
+      <ModalBox
+        isModalVisible={isModalVisible}
+        modalMessage={modalMessage}
+        modalType={modalType}
+        setIsModalVisible={setIsModalVisible}
+        pressAndGoBack={pressAndGoBack}
+        onConfirm={handleConfirm}
+        goBack={goBack}
+      />
       {/* Order Details */}
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
