@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
-import { SafeAreaView, ScrollView, View, Text, TextInput } from 'react-native';
+import {
+  LayoutAnimation,
+  UIManager,
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+} from 'react-native';
 import {
   getInstallationOrder1,
   submitOrder,
@@ -14,6 +22,8 @@ import Attachments from '../components/Attachments';
 import ModalBox from '../components/ModalBox';
 import * as FileSystem from 'expo-file-system';
 import { StatusBar } from 'expo-status-bar';
+
+UIManager.setLayoutAnimationEnabledExperimental(true);
 
 const OrderDetail1 = ({ navigation, route }) => {
   const installationOrderId = route.params.installationOrderId;
@@ -178,6 +188,7 @@ const OrderDetail1 = ({ navigation, route }) => {
             title="Order Info"
             state={showOrderInfo}
             setState={setShowOrderInfo}
+            LayoutAnimation={LayoutAnimation}
           />
           {showOrderInfo && <OrderInfo installationOrder={installationOrder} />}
         </View>
@@ -190,6 +201,7 @@ const OrderDetail1 = ({ navigation, route }) => {
             required={true}
             fullfilled={attachementsFullfilled}
             slideable={true}
+            LayoutAnimation={LayoutAnimation}
           />
           {showAttachments && (
             <Attachments
@@ -206,6 +218,7 @@ const OrderDetail1 = ({ navigation, route }) => {
             title="Comment"
             state={showComments}
             setState={setShowComments}
+            LayoutAnimation={LayoutAnimation}
           />
           {showComments && (
             <TextInput

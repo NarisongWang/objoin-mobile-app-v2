@@ -2,7 +2,6 @@ import React from 'react';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
-  DrawerItem,
 } from '@react-navigation/drawer';
 import { View, Image, Pressable, Text } from 'react-native';
 import { signOut } from 'firebase/auth';
@@ -18,6 +17,15 @@ const CustomDrawerContent = ({ navigation }) => {
       .then(() => {})
       .catch((error) => {});
   };
+
+  const openHelp = async () => {
+    const idTokenResult = await user.getIdTokenResult();
+    const role = idTokenResult.claims.role;
+    navigation.navigate('Help', {
+      role,
+    });
+  };
+
   return (
     <DrawerContentScrollView>
       <View className="flex flex-col items-center justify-center mt-3 pb-3 border-gray-200 border-b">
@@ -48,15 +56,17 @@ const CustomDrawerContent = ({ navigation }) => {
         </Pressable>
         <Pressable
           className="w-11/12 flex flex-row justify-between p-2 items-center m-2"
-          onPress={() => {}}
+          onPress={() => {
+            openHelp();
+          }}
         >
           <Text className="text-gray-600 font-bold text-sm md:text-base ml-2">
             User Manual
           </Text>
-          <View className="mr-2">
+          <View className="mr-[10]">
             <FontAwesome
               name="question-circle"
-              size={15}
+              size={18}
               color="rgb(55,65,81)"
             />
           </View>

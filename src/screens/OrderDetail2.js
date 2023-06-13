@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
-import { SafeAreaView, ScrollView, View, Text } from 'react-native';
+import {
+  LayoutAnimation,
+  UIManager,
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+} from 'react-native';
 import {
   getInstallationOrder2,
   submitOrder,
@@ -17,6 +24,8 @@ import PDFList from '../components/PDFList';
 import InstallCheckList from '../components/InstallCheckList';
 import InstallationItems from '../components/InstallationItems';
 import { StatusBar } from 'expo-status-bar';
+
+UIManager.setLayoutAnimationEnabledExperimental(true);
 
 const OrderDetail2 = ({ navigation, route }) => {
   const installationOrderId = route.params.installationOrderId;
@@ -198,6 +207,7 @@ const OrderDetail2 = ({ navigation, route }) => {
             title="Order Info"
             state={showOrderInfo}
             setState={setShowOrderInfo}
+            LayoutAnimation={LayoutAnimation}
           />
           {showOrderInfo && <OrderInfo installationOrder={installationOrder} />}
         </View>
@@ -208,6 +218,7 @@ const OrderDetail2 = ({ navigation, route }) => {
             state={showPdfFiles}
             setState={setShowPdfFiles}
             slideable={true}
+            LayoutAnimation={LayoutAnimation}
           />
           {showPdfFiles && <PDFList dirs={files} navigation={navigation} />}
         </View>
@@ -224,6 +235,7 @@ const OrderDetail2 = ({ navigation, route }) => {
                 ? true
                 : false
             }
+            LayoutAnimation={LayoutAnimation}
           />
           {showCheckList && <InstallCheckList navigation={navigation} />}
         </View>
@@ -235,6 +247,7 @@ const OrderDetail2 = ({ navigation, route }) => {
             setState={setShowCheckItems}
             required={true}
             fullfilled={installationItemsFullfilled}
+            LayoutAnimation={LayoutAnimation}
           />
           {showCheckItems && (
             <InstallationItems
@@ -255,6 +268,7 @@ const OrderDetail2 = ({ navigation, route }) => {
             required={true}
             fullfilled={attachementsFullfilled}
             slideable={true}
+            LayoutAnimation={LayoutAnimation}
           />
           {showAttachments && (
             <Attachments

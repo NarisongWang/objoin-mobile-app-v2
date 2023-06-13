@@ -14,12 +14,14 @@ const FoldBar = ({
   required,
   fullfilled,
   slideable,
+  LayoutAnimation,
 }) => {
   const windowWidth = Dimensions.get('window').width;
   return (
     <Pressable
       className="flex-row items-center justify-between rounded-lg bg-slate-200 h-9 md:h-12 m-1"
       onPress={() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setState(!state);
       }}
     >

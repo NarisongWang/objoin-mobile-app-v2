@@ -11,6 +11,7 @@ import EditPhoto from '../screens/EditPhoto';
 import PDFScreen from '../screens/PDFScreen';
 import CheckList from '../screens/CheckList';
 import ManageAccount from '../screens/ManageAccount';
+import HelpScreen from '../screens/HelpScreen';
 
 const AppMainStack = () => {
   const MainStack = createNativeStackNavigator();
@@ -95,6 +96,18 @@ const AppMainStack = () => {
         options={{
           headerTitle: () => {
             return <HeaderTitle title="OBJOIN - Manage Account" />;
+          },
+          headerRight: () => {
+            return <HeaderRightButton user={user} />;
+          },
+        }}
+      />
+      <MainStack.Screen
+        name="Help"
+        component={HelpScreen}
+        options={{
+          headerTitle: () => {
+            return <HeaderTitle title="OBJOIN - Help" />;
           },
           headerRight: () => {
             return <HeaderRightButton user={user} />;

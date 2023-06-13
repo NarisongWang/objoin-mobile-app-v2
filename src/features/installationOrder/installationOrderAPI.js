@@ -4,9 +4,10 @@ import { getConfig } from '../../utils/utils';
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 
-const API_URL_LIST = API_URL + '/installationorders/';
-const API_URL_UPLOAD = API_URL + '/uploadPhotos';
+const API_URL_LIST = API_URL + '/installation-orders/';
+const API_URL_UPLOAD = API_URL + '/upload-photos';
 const API_URL_DOWNLOAD = API_URL + '/download';
+const API_URL_DOWNLOAD_HELP = API_URL + '/download-help';
 
 axios.defaults.timeout = 30000;
 axios.defaults.timeoutErrorMessage =
@@ -156,10 +157,50 @@ const openPDF = async (fileInfo, token) => {
   }
 };
 
+const openHelp = async (fileInfo, token) => {
+  try {
+    const config = getConfig(token);
+    const { filePath, fileName } = fileInfo;
+
+    //find document from local storage
+    const fileUri = FileSystem.documentDirectory + filePath + fileName;
+    const fileExists = (await FileSystem.getInfoAsync(fileUri)).exists;
+    //if document exists then return fileUri
+    if (fileExists) {
+      return fileUri;
+    }
+    //if document doesn't exist, download file from the backend
+    else {
+      //check directory
+      const dirUri = FileSystem.documentDirectory + filePath;
+      const dirExists = (await FileSystem.getInfoAsync(dirUri)).isDirectory;
+      if (!dirExists) {
+        await FileSystem.makeDirectoryAsync(dirUri, { intermediates: true });
+      }
+      // download pdf file
+      const response = await axios.post(
+        API_URL_DOWNLOAD_HELP,
+        { path: fileName },
+        config
+      );
+      console.log(response);
+      await FileSystem.writeAsStringAsync(fileUri, response.data, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      return fileUri;
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
 const isCurrentFolderInOrderList = (order, installationOrders) => {
   for (let i = 0; i < installationOrders.length; i++) {
     const installationOrder = installationOrders[i];
-    if (order == installationOrder.installationOrderNumber) {
+    if (
+      order === installationOrder.installationOrderNumber ||
+      order === 'help'
+    ) {
       return true;
     }
   }
@@ -172,6 +213,7 @@ const installationOrderAPI = {
   updateInstallationOrder,
   submitOrder,
   openPDF,
+  openHelp,
 };
 
 export default installationOrderAPI;
