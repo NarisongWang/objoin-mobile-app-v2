@@ -183,7 +183,6 @@ const openHelp = async (fileInfo, token) => {
         { path: fileName },
         config
       );
-      console.log(response);
       await FileSystem.writeAsStringAsync(fileUri, response.data, {
         encoding: FileSystem.EncodingType.Base64,
       });
