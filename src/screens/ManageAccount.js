@@ -66,7 +66,7 @@ const ManageAccount = ({ navigation }) => {
       });
   };
 
-  const onChangePass = (e) => {
+  const onChangePass = () => {
     setIsLoading(true);
     const credential = EmailAuthProvider.credential(user.email, oldPassword);
     reauthenticateWithCredential(user, credential)
