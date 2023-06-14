@@ -14,7 +14,6 @@ import { Input, Icon } from '@rneui/themed';
 import Spinner from '../components/Spinner';
 import ModalBox from '../components/ModalBox';
 import { validateEmail } from '../utils/utils';
-import ModalBox from '../components/ModalBox';
 import { StatusBar } from 'expo-status-bar';
 
 const ResetPassword = ({ navigation }) => {

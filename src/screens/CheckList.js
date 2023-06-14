@@ -62,7 +62,7 @@ const CheckList = ({ navigation }) => {
 
   const wait = () => {
     return new Promise((resolve) => {
-      setTimeout(resolve, 2000);
+      setTimeout(resolve, 1000);
     });
   };
 

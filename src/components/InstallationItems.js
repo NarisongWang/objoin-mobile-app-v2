@@ -42,13 +42,15 @@ const InstallationItems = ({
     setCheckState(newCheck);
   };
   useEffect(() => {
-    for (const state of checkState) {
-      if (!state) {
-        setInstallationItemsFullfilled(false);
-        return;
+    if (checkState.length > 0) {
+      for (const state of checkState) {
+        if (!state) {
+          setInstallationItemsFullfilled(false);
+          return;
+        }
       }
+      setInstallationItemsFullfilled(true);
     }
-    setInstallationItemsFullfilled(true);
   }, [checkState]);
 
   return (
