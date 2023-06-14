@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { openHelp } from '../features/installationOrder/installationOrderSlice';
 import { SafeAreaView, useWindowDimensions } from 'react-native';
 import Spinner from '../components/Spinner';
-import Pdf from 'react-native-pdf';
+//import Pdf from 'react-native-pdf';
 import ModalBox from '../components/ModalBox';
 import * as FileSystem from 'expo-file-system';
 import { StatusBar } from 'expo-status-bar';
